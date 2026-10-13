@@ -138,6 +138,11 @@ th{color:var(--muted);font-weight:500;font-size:14px}
 .qa{background:var(--chip);border-radius:12px;padding:10px 12px;margin-top:8px;line-height:1.5}
 .scroller{overflow-x:auto}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+.seg{display:inline-flex;border:3px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+.seg button{font-family:inherit;font-size:15px;font-weight:600;border:0;padding:6px 16px;background:transparent;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--violet);color:#fff}
+.seg button:focus-visible{outline:4px solid var(--violet);outline-offset:-4px}
 </style>
 </head>
 <body>
@@ -145,92 +150,20 @@ th{color:var(--muted);font-weight:500;font-size:14px}
 
 <div id="hud">
   <div class="hudbar">
-    <div class="hbox grow"><span id="hBaseSub">ฐาน</span><b id="hBase">-</b></div>
-    <div class="hbox"><span>ข้อที่</span><b id="hQ">0/20</b></div>
-    <div class="hbox"><span>คะแนน</span><b id="hScore">0</b><div class="dots" id="hDots" title="ตอบถูกติดต่อกัน"></div></div>
+    <div class="hbox grow"><span id="hBaseSub"></span><b id="hBase">-</b></div>
+    <div class="hbox"><span id="hQLbl"></span><b id="hQ">0/20</b></div>
+    <div class="hbox"><span id="hScoreLbl"></span><b id="hScore">0</b><div class="dots" id="hDots"></div></div>
   </div>
   <div class="bar"><i id="hBar"></i></div>
 </div>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- Start -->
-<section class="screen on" id="sStart">
-  <div class="center">
-    <div class="card" style="text-align:center">
-      <div style="font-size:44px" aria-hidden="true">🧭🌲🏙️🏰</div>
-      <h1 class="logo">Phrasal verbs in life<small>ผจญภัย 5 ฐาน · ฝึกใช้ Literal และ Idiomatic meaning</small></h1>
-      <p class="sub">เดินทางผ่านฐานต่าง ๆ ตอบ 20 ข้อ ข้อละ 1 คะแนน ตอบผิดหัก 1 คะแนน<br>ตอบถูกติดกัน 5 ข้อ คะแนนทั้ง 5 ข้อคูณ 10!</p>
-      <div class="stack">
-        <button class="btn" id="bSolo">🧑 เล่นคนเดียว</button>
-        <button class="btn alt" id="bGroup">👥 เล่นกลุ่ม 4 คน</button>
-        <button class="btn ghost" id="bTeacher">📋 คู่มือครู / ตัวอย่างโจทย์</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Setup -->
-<section class="screen" id="sSetup">
-  <div class="center">
-    <div class="card">
-      <h2 id="setupTitle" style="font-size:26px">ตั้งชื่อผู้เล่น</h2>
-      <p class="sub" id="setupSub"></p>
-      <div id="nameFields"></div>
-      <div class="row stack">
-        <button class="btn ghost" id="bBack">ย้อนกลับ</button>
-        <button class="btn" id="bGo">ออกเดินทาง!</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Game panel -->
+<section class="screen on" id="sStart"><div class="center"><div class="card" id="startCard" style="text-align:center"></div></div></section>
+<section class="screen" id="sSetup"><div class="center"><div class="card" id="setupCard"></div></div></section>
 <div id="panel"><div class="card" id="panelCard"></div></div>
-
-<!-- Summary -->
 <section class="screen" id="sSum"></section>
-
-<!-- Teacher -->
-<div class="mod" id="mTeacher">
-  <div class="card">
-    <div class="row" style="align-items:center"><h2 style="font-size:24px">📋 คู่มือครู: Phrasal verbs in life</h2><button class="btn sm ghost" id="bClose" style="flex:none">ปิด</button></div>
-    <h3>วัตถุประสงค์</h3>
-    <p>ให้นักเรียน ม.5 เข้าใจหลักภาษาเรื่อง Phrasal verbs และนำไปใช้ในชีวิตประจำวันได้ โดยแยกความหมายตรงตัว (literal) ออกจากความหมายเชิงสำนวน (idiomatic) ได้จากบริบท</p>
-    <h3>อุปกรณ์</h3>
-    <p>โทรศัพท์ 1 เครื่อง/ผู้เล่น (โหมดเดี่ยว) หรือ 1 เครื่อง/กลุ่ม (โหมดกลุ่ม) เปิดไฟล์เกมนี้ + กระดาษและปากกาสำหรับ Exit ticket</p>
-    <h3>แผนเวลา 20 นาที</h3>
-    <ol>
-      <li>2 นาที: ครูอธิบายกติกา แบ่งกลุ่ม 4 คน</li>
-      <li>14 นาที: เล่นเกม 5 ฐาน (ฐานละ 4 ข้อ รวม 20 ข้อ) โดยแต่ละฐานมีบทเรียนย่อยก่อนเริ่ม</li>
-      <li>4 นาที: สรุปบทเรียนจากหน้าสรุปผล และเขียน Exit ticket</li>
-    </ol>
-    <h3>ฐานทั้ง 5</h3>
-    <ul>
-      <li>ฐาน 1 ป่า: Literal meaning (การกระทำจริง)</li>
-      <li>ฐาน 2 เมือง: Literal meaning ในชีวิตประจำวัน</li>
-      <li>ฐาน 3 ลานเวทมนตร์: Idiomatic meaning เบื้องต้น</li>
-      <li>ฐาน 4 ชายหาด: คำเดียวกัน ความหมายต่างกัน</li>
-      <li>ฐาน 5 ปราสาท (ด่านบอส): แยก literal กับ idiomatic จากบริบท</li>
-    </ul>
-    <h3>กติกาและคะแนน</h3>
-    <ul>
-      <li>ตอบถูก +1 คะแนน, ตอบผิด −1 คะแนน (คะแนนติดลบได้)</li>
-      <li>ตอบถูกติดต่อกัน 5 ข้อ คะแนนของ 5 ข้อนั้นคูณ 10 (5 คะแนน กลายเป็น 50 คะแนน) แล้วเริ่มนับคอมโบใหม่ ตอบผิดเมื่อไรคอมโบรีเซ็ต</li>
-      <li>โหมดกลุ่ม: ผู้เล่น 4 คนสลับกันกดตอบทีละข้อ เพื่อนในทีมช่วยกันคิดได้ คะแนนและคอมโบเป็นของทั้งทีม ระบบจะนับจำนวนข้อที่ตอบถูกของแต่ละคนให้</li>
-    </ul>
-    <h3>ตัวอย่างคำถาม/คำตอบ</h3>
-    <div class="qa"><b>Literal:</b> Please ___ your shoes before entering the house.<br>ตอบ: <b>take off</b> (ถอดรองเท้า การกระทำจริง)</div>
-    <div class="qa"><b>Idiomatic:</b> I can't ___ the noise anymore.<br>ตอบ: <b>put up with</b> (ทนต่อ ความหมายไม่ได้มาจากคำแต่ละคำ)</div>
-    <div class="qa"><b>Boss:</b> Which sentence uses “take off” idiomatically?<br>ตอบ: <b>Her online shop took off quickly.</b> (ธุรกิจไปได้สวย)</div>
-    <h3>วิธีสรุปบทเรียน</h3>
-    <ol>
-      <li>ดูหน้าสรุป: คะแนน ความแม่นยำ literal เทียบกับ idiomatic และรายการข้อที่พลาด</li>
-      <li>ครูถามนำ: “ถ้าเห็นการกระทำจริงได้ในภาพ คือ literal ถ้าต้องแปลเป็นความหมายใหม่ คือ idiomatic ใช่ไหม?”</li>
-      <li>Exit ticket บนกระดาษ: เขียน phrasal verb ที่เพิ่งรู้ 1 คำ พร้อมประโยค literal 1 ประโยค และ idiomatic 1 ประโยค ที่เกี่ยวกับชีวิตตัวเอง</li>
-    </ol>
-  </div>
-</div>
+<div class="mod" id="mTeacher"><div class="card" id="teacherCard"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -240,59 +173,71 @@ var $=function(s){return document.querySelector(s)};
 var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
 
+/* ============ LANGUAGE ============ */
+var LANG="th";
+try{var sv=localStorage.getItem("pvil-lang");if(sv==="en"||sv==="th")LANG=sv}catch(e){}
+function L2(th,en){return LANG==="th"?th:en}
+function tx(o){return typeof o==="string"?o:o[LANG]}
+function seg(){return '<div class="seg" role="group" aria-label="Language / ภาษา"><button data-lang="th" class="'+(LANG==="th"?"on":"")+'">ไทย</button><button data-lang="en" class="'+(LANG==="en"?"on":"")+'">English</button></div>'}
+
 /* ============ GAME DATA ============ */
 var STREAK_LEN=5, STREAK_MULT=10;
 var BASES=[
- {id:1,emoji:"🌲",name:"ป่าแห่งการเคลื่อนไหว",sub:"Literal meaning",
-  lesson:{h:"Literal meaning = ความหมายตรงตัว",p:"Phrasal verb คือ Verb + Particle (up, off, on, out...) ถ้าเห็นภาพการกระทำจริงแล้วแปลตามคำได้เลย คือ literal",
-   ex:[["She <b>sat down</b> on the bench.","เธอนั่งลงบนม้านั่ง"],["He <b>picked up</b> his bag.","เขาหยิบกระเป๋าขึ้นมา"],["Turn <b>off</b> the fan.","ปิดพัดลม"]],
-   tip:"เคล็ดลับ: ถามตัวเองว่า “ทำท่าทางนี้ได้จริงไหม?” ถ้าได้ แปลว่าส่วนใหญ่เป็น literal"},
+ {id:1,emoji:"🌲",name:{th:"ป่าแห่งการเคลื่อนไหว",en:"Forest of Motion"},sub:{th:"Literal meaning",en:"Literal meaning"},
+  lesson:{h:{th:"Literal meaning = ความหมายตรงตัว",en:"Literal meaning = the words mean what they say"},
+   p:{th:"Phrasal verb คือ Verb + Particle (up, off, on, out...) ถ้าเห็นภาพการกระทำจริงแล้วแปลตามคำได้เลย คือ literal",en:"A phrasal verb is Verb + Particle (up, off, on, out...). If you can picture the action and translate word by word, it is literal."},
+   ex:[["She <b>sat down</b> on the bench.",{th:"เธอนั่งลงบนม้านั่ง",en:"lowered herself onto the bench"}],["He <b>picked up</b> his bag.",{th:"เขาหยิบกระเป๋าขึ้นมา",en:"lifted his bag from the floor"}],["Turn <b>off</b> the fan.",{th:"ปิดพัดลม",en:"stop the fan"}]],
+   tip:{th:"เคล็ดลับ: ถามตัวเองว่า “ทำท่าทางนี้ได้จริงไหม?” ถ้าได้ แปลว่าส่วนใหญ่เป็น literal",en:"Tip: ask “Can I really do this action?” If yes, it is usually literal."}},
   qs:[
-  {kind:"literal",pv:"take off",mean:"ถอด (เสื้อผ้า/รองเท้า)",q:"Please ___ your shoes before entering the house.",opts:["take off","take after","take on"],a:0,th:"กรุณาถอดรองเท้าก่อนเข้าบ้าน",why:"take off = ถอด เป็นการกระทำจริง จึงเป็น literal ส่วน take after = หน้าตาเหมือน(ญาติ) และ take on = รับ(งาน)"},
-  {kind:"literal",pv:"pick up",mean:"หยิบขึ้น",q:"Tom ___ the box from the floor and put it on the shelf.",opts:["picked up","gave up","ran into"],a:0,th:"ทอมหยิบกล่องขึ้นจากพื้นแล้ววางบนชั้น",why:"picked up = หยิบขึ้น (literal) ส่วน gave up = ยอมแพ้ และ ran into = บังเอิญเจอ"},
-  {kind:"literal",pv:"turn on",mean:"เปิด (ไฟ/เครื่องใช้ไฟฟ้า)",q:"The room was dark, so she ___ the lights.",opts:["turned off","turned on","turned out"],a:1,th:"ห้องมืด เธอจึงเปิดไฟ",why:"turned on = เปิดไฟ ตรงข้ามกับ turned off (ปิด) ส่วน turned out = ผลปรากฏว่า"},
-  {kind:"literal",pv:"blow out",mean:"เป่าให้ดับ",q:"He ___ the candles on his birthday cake and made a wish.",opts:["blew up","blew out","blew over"],a:1,th:"เขาเป่าเทียนบนเค้กวันเกิดแล้วอธิษฐาน",why:"blew out = เป่าให้ดับ (literal) ส่วน blew up = ระเบิด/เป่าให้พอง และ blew over = (พายุ/ปัญหา) ผ่านไป"}]},
- {id:2,emoji:"🏙️",name:"เมืองชีวิตประจำวัน",sub:"Literal meaning",
-  lesson:{h:"Phrasal verbs ใน daily life",p:"หลายคำที่เราใช้ทุกวันเป็น literal เช่น การขึ้น-ลงรถ การแต่งตัว การเอาของออกไป",
-   ex:[["We <b>got on</b> the bus.","เราขึ้นรถบัส"],["Put <b>on</b> your helmet.","สวมหมวกกันน็อก"],["Please <b>take out</b> the trash.","ช่วยเอาขยะไปทิ้งหน่อย"]],
-   tip:"เคล็ดลับ: particle บอกทิศทาง เช่น up = ขึ้น, off = ออก/ลง, out = ออกไป"},
+  {kind:"literal",pv:"take off",mean:{th:"ถอด (เสื้อผ้า/รองเท้า)",en:"remove (clothes/shoes)"},q:"Please ___ your shoes before entering the house.",opts:["take off","take after","take on"],a:0,th:"กรุณาถอดรองเท้าก่อนเข้าบ้าน",why:{th:"take off = ถอด เป็นการกระทำจริง จึงเป็น literal ส่วน take after = หน้าตาเหมือน(ญาติ) และ take on = รับ(งาน)",en:"take off = remove. It is a real action, so it is literal. take after = resemble a relative; take on = accept (a job)."}},
+  {kind:"literal",pv:"pick up",mean:{th:"หยิบขึ้น",en:"lift up"},q:"Tom ___ the box from the floor and put it on the shelf.",opts:["picked up","gave up","ran into"],a:0,th:"ทอมหยิบกล่องขึ้นจากพื้นแล้ววางบนชั้น",why:{th:"picked up = หยิบขึ้น (literal) ส่วน gave up = ยอมแพ้ และ ran into = บังเอิญเจอ",en:"picked up = lift (literal). gave up = quit; ran into = meet by chance."}},
+  {kind:"literal",pv:"turn on",mean:{th:"เปิด (ไฟ/เครื่องใช้ไฟฟ้า)",en:"switch on (a light/device)"},q:"The room was dark, so she ___ the lights.",opts:["turned off","turned on","turned out"],a:1,th:"ห้องมืด เธอจึงเปิดไฟ",why:{th:"turned on = เปิดไฟ ตรงข้ามกับ turned off (ปิด) ส่วน turned out = ผลปรากฏว่า",en:"turned on = switch on; the opposite is turned off. turned out = ended up being."}},
+  {kind:"literal",pv:"blow out",mean:{th:"เป่าให้ดับ",en:"put out by blowing"},q:"He ___ the candles on his birthday cake and made a wish.",opts:["blew up","blew out","blew over"],a:1,th:"เขาเป่าเทียนบนเค้กวันเกิดแล้วอธิษฐาน",why:{th:"blew out = เป่าให้ดับ (literal) ส่วน blew up = ระเบิด/เป่าให้พอง และ blew over = (พายุ/ปัญหา) ผ่านไป",en:"blew out = put out by blowing (literal). blew up = explode or inflate; blew over = (a storm/problem) passed."}}]},
+ {id:2,emoji:"🏙️",name:{th:"เมืองชีวิตประจำวัน",en:"Everyday City"},sub:{th:"Literal meaning",en:"Literal meaning"},
+  lesson:{h:{th:"Phrasal verbs ใน daily life",en:"Phrasal verbs in daily life"},
+   p:{th:"หลายคำที่เราใช้ทุกวันเป็น literal เช่น การขึ้น-ลงรถ การแต่งตัว การเอาของออกไป",en:"Many everyday phrasal verbs are literal: getting on and off transport, dressing, taking things out."},
+   ex:[["We <b>got on</b> the bus.",{th:"เราขึ้นรถบัส",en:"boarded the bus"}],["Put <b>on</b> your helmet.",{th:"สวมหมวกกันน็อก",en:"wear your helmet"}],["Please <b>take out</b> the trash.",{th:"ช่วยเอาขยะไปทิ้งหน่อย",en:"carry the trash outside"}]],
+   tip:{th:"เคล็ดลับ: particle บอกทิศทาง เช่น up = ขึ้น, off = ออก/ลง, out = ออกไป",en:"Tip: the particle shows direction: up = upward, off = away or down from, out = outward."}},
   qs:[
-  {kind:"literal",pv:"get off",mean:"ลงจาก (รถ)",q:"We ___ the bus at Siam station and walked to the mall.",opts:["got off","got over","got along"],a:0,th:"เราลงจากรถบัสที่สถานีสยามแล้วเดินไปห้าง",why:"got off = ลงจากรถ (literal) ส่วน got over = หายจาก/ผ่านพ้น และ got along = เข้ากันได้"},
-  {kind:"literal",pv:"put on",mean:"สวมใส่",q:"Don't forget to ___ your jacket; it's cold outside.",opts:["put on","put off","put out"],a:0,th:"อย่าลืมใส่แจ็กเก็ตนะ ข้างนอกหนาว",why:"put on = สวมใส่ ส่วน put off = เลื่อนออกไป และ put out = ดับ(ไฟ)"},
-  {kind:"literal",pv:"take out",mean:"เอาออกไป",q:"She ___ the rubbish before the garbage truck arrived.",opts:["took out","took after","took up"],a:0,th:"เธอเอาขยะไปทิ้งก่อนรถขยะมา",why:"took out = เอาออกไป (literal) ส่วน took up = เริ่มทำ(งานอดิเรก)"},
-  {kind:"literal",pv:"put up",mean:"ยกขึ้น (มือ)",q:"Please ___ your hand if you know the answer.",opts:["put up","put off","put out"],a:0,th:"กรุณายกมือถ้ารู้คำตอบ",why:"put up your hand = ยกมือขึ้น (literal) ส่วน put off = เลื่อน และ put out = ดับ"}]},
- {id:3,emoji:"🔮",name:"ลานเวทมนตร์",sub:"Idiomatic meaning",
-  lesson:{h:"Idiomatic meaning = ความหมายเชิงสำนวน",p:"บางครั้งแปลทีละคำแล้วไม่ได้ความ ต้องจำเป็นก้อน เช่น give up ไม่ได้แปลว่า “ให้ขึ้น” แต่แปลว่า “ยอมแพ้”",
-   ex:[["Never <b>give up</b>!","อย่ายอมแพ้"],["I can't <b>put up with</b> this heat.","ฉันทนความร้อนนี้ไม่ไหว"],["She <b>takes after</b> her mom.","เธอหน้าตา/นิสัยเหมือนแม่"]],
-   tip:"เคล็ดลับ: ถ้าแปลตรงตัวแล้วประหลาด แปลว่าเป็น idiomatic ให้จำความหมายทั้งก้อน"},
+  {kind:"literal",pv:"get off",mean:{th:"ลงจาก (รถ)",en:"get out of (a bus/train)"},q:"We ___ the bus at Siam station and walked to the mall.",opts:["got off","got over","got along"],a:0,th:"เราลงจากรถบัสที่สถานีสยามแล้วเดินไปห้าง",why:{th:"got off = ลงจากรถ (literal) ส่วน got over = หายจาก/ผ่านพ้น และ got along = เข้ากันได้",en:"got off = leave a bus or train (literal). got over = recover from; got along = have a good relationship."}},
+  {kind:"literal",pv:"put on",mean:{th:"สวมใส่",en:"wear"},q:"Don't forget to ___ your jacket; it's cold outside.",opts:["put on","put off","put out"],a:0,th:"อย่าลืมใส่แจ็กเก็ตนะ ข้างนอกหนาว",why:{th:"put on = สวมใส่ ส่วน put off = เลื่อนออกไป และ put out = ดับ(ไฟ)",en:"put on = wear. put off = postpone; put out = extinguish."}},
+  {kind:"literal",pv:"take out",mean:{th:"เอาออกไป",en:"carry outside"},q:"She ___ the rubbish before the garbage truck arrived.",opts:["took out","took after","took up"],a:0,th:"เธอเอาขยะไปทิ้งก่อนรถขยะมา",why:{th:"took out = เอาออกไป (literal) ส่วน took up = เริ่มทำ(งานอดิเรก)",en:"took out = carry outside (literal). took up = start (a hobby)."}},
+  {kind:"literal",pv:"put up",mean:{th:"ยกขึ้น (มือ)",en:"raise (a hand)"},q:"Please ___ your hand if you know the answer.",opts:["put up","put off","put out"],a:0,th:"กรุณายกมือถ้ารู้คำตอบ",why:{th:"put up your hand = ยกมือขึ้น (literal) ส่วน put off = เลื่อน และ put out = ดับ",en:"put up your hand = raise it (literal). put off = postpone; put out = extinguish."}}]},
+ {id:3,emoji:"🔮",name:{th:"ลานเวทมนตร์",en:"Magic Plaza"},sub:{th:"Idiomatic meaning",en:"Idiomatic meaning"},
+  lesson:{h:{th:"Idiomatic meaning = ความหมายเชิงสำนวน",en:"Idiomatic meaning = a new meaning"},
+   p:{th:"บางครั้งแปลทีละคำแล้วไม่ได้ความ ต้องจำเป็นก้อน เช่น give up ไม่ได้แปลว่า “ให้ขึ้น” แต่แปลว่า “ยอมแพ้”",en:"Sometimes word-by-word translation makes no sense. Learn the whole chunk: give up does not mean “give upward”, it means “quit”."},
+   ex:[["Never <b>give up</b>!",{th:"อย่ายอมแพ้",en:"never quit"}],["I can't <b>put up with</b> this heat.",{th:"ฉันทนความร้อนนี้ไม่ไหว",en:"tolerate"}],["She <b>takes after</b> her mom.",{th:"เธอหน้าตา/นิสัยเหมือนแม่",en:"resembles her mom"}]],
+   tip:{th:"เคล็ดลับ: ถ้าแปลตรงตัวแล้วประหลาด แปลว่าเป็น idiomatic ให้จำความหมายทั้งก้อน",en:"Tip: if the literal translation sounds strange, it is probably idiomatic. Memorize the whole chunk."}},
   qs:[
-  {kind:"idiomatic",pv:"put up with",mean:"อดทนต่อ",q:"I can't ___ the noise from the construction site anymore.",opts:["put up with","put on","put away"],a:0,th:"ฉันทนเสียงจากไซต์ก่อสร้างไม่ไหวแล้ว",why:"put up with = ทนต่อ ความหมายไม่ได้มาจากคำ put + up + with ตรง ๆ จึงเป็น idiomatic"},
-  {kind:"idiomatic",pv:"take after",mean:"เหมือน (พ่อแม่/ญาติ)",q:"Nina ___ her grandmother; they both have the same smile.",opts:["takes after","takes off","takes in"],a:0,th:"นีน่าเหมือนคุณยาย ทั้งคู่ยิ้มเหมือนกัน",why:"take after = เหมือน(ญาติผู้ใหญ่) ส่วน takes in = รับเข้ามา/เข้าใจ"},
-  {kind:"idiomatic",pv:"give up",mean:"ยอมแพ้ / เลิก",q:"Don't ___! You can pass the exam if you keep trying.",opts:["give up","give out","give away"],a:0,th:"อย่ายอมแพ้! ถ้าพยายามต่อไปเธอจะสอบผ่าน",why:"give up = ยอมแพ้ ส่วน give out = แจก และ give away = ให้ฟรี"},
-  {kind:"idiomatic",pv:"run into",mean:"บังเอิญเจอ",q:"We ___ an old friend at the supermarket yesterday.",opts:["ran into","ran out of","ran away from"],a:0,th:"เมื่อวานเราบังเอิญเจอเพื่อนเก่าที่ซูเปอร์มาร์เก็ต",why:"ran into = บังเอิญเจอ (ไม่ได้วิ่งเข้าไปจริง ๆ) ส่วน ran out of = ใช้จนหมด"}]},
- {id:4,emoji:"🏖️",name:"ชายหาดสองความหมาย",sub:"คำเดียว หลายความหมาย",
-  lesson:{h:"คำเดียวกัน ความหมายต่างกัน",p:"Phrasal verb หลายคำมีทั้ง literal และ idiomatic ต้องดูบริบทของประโยคว่าสิ่งที่ถูกกระทำคืออะไร",
-   ex:[["He <b>picked up</b> a shell.","เขาหยิบเปลือกหอยขึ้นมา (literal)"],["She <b>picked up</b> some Thai.","เธอเรียนภาษาไทยมานิดหน่อย (idiomatic)"],["The match was <b>called off</b>.","การแข่งขันถูกยกเลิก (idiomatic)"]],
-   tip:"เคล็ดลับ: ดูคำนามที่ตามมา pick up a shell = หยิบจริง, pick up a language = เรียนรู้"},
+  {kind:"idiomatic",pv:"put up with",mean:{th:"อดทนต่อ",en:"tolerate"},q:"I can't ___ the noise from the construction site anymore.",opts:["put up with","put on","put away"],a:0,th:"ฉันทนเสียงจากไซต์ก่อสร้างไม่ไหวแล้ว",why:{th:"put up with = ทนต่อ ความหมายไม่ได้มาจากคำ put + up + with ตรง ๆ จึงเป็น idiomatic",en:"put up with = tolerate. The meaning does not come from put + up + with, so it is idiomatic."}},
+  {kind:"idiomatic",pv:"take after",mean:{th:"เหมือน (พ่อแม่/ญาติ)",en:"resemble (a parent/relative)"},q:"Nina ___ her grandmother; they both have the same smile.",opts:["takes after","takes off","takes in"],a:0,th:"นีน่าเหมือนคุณยาย ทั้งคู่ยิ้มเหมือนกัน",why:{th:"take after = เหมือน(ญาติผู้ใหญ่) ส่วน takes in = รับเข้ามา/เข้าใจ",en:"take after = resemble an older family member. takes in = absorbs or understands."}},
+  {kind:"idiomatic",pv:"give up",mean:{th:"ยอมแพ้ / เลิก",en:"quit"},q:"Don't ___! You can pass the exam if you keep trying.",opts:["give up","give out","give away"],a:0,th:"อย่ายอมแพ้! ถ้าพยายามต่อไปเธอจะสอบผ่าน",why:{th:"give up = ยอมแพ้ ส่วน give out = แจก และ give away = ให้ฟรี",en:"give up = quit. give out = distribute; give away = give for free."}},
+  {kind:"idiomatic",pv:"run into",mean:{th:"บังเอิญเจอ",en:"meet by chance"},q:"We ___ an old friend at the supermarket yesterday.",opts:["ran into","ran out of","ran away from"],a:0,th:"เมื่อวานเราบังเอิญเจอเพื่อนเก่าที่ซูเปอร์มาร์เก็ต",why:{th:"ran into = บังเอิญเจอ (ไม่ได้วิ่งเข้าไปจริง ๆ) ส่วน ran out of = ใช้จนหมด",en:"ran into = meet by chance (nobody actually ran). ran out of = used up."}}]},
+ {id:4,emoji:"🏖️",name:{th:"ชายหาดสองความหมาย",en:"Two-Meaning Beach"},sub:{th:"คำเดียว หลายความหมาย",en:"One verb, many meanings"},
+  lesson:{h:{th:"คำเดียวกัน ความหมายต่างกัน",en:"Same verb, different meanings"},
+   p:{th:"Phrasal verb หลายคำมีทั้ง literal และ idiomatic ต้องดูบริบทของประโยคว่าสิ่งที่ถูกกระทำคืออะไร",en:"Many phrasal verbs have both a literal and an idiomatic meaning. Check the context, especially the object."},
+   ex:[["He <b>picked up</b> a shell.",{th:"เขาหยิบเปลือกหอยขึ้นมา (literal)",en:"lifted it (literal)"}],["She <b>picked up</b> some Thai.",{th:"เธอเรียนภาษาไทยมานิดหน่อย (idiomatic)",en:"learned it casually (idiomatic)"}],["The match was <b>called off</b>.",{th:"การแข่งขันถูกยกเลิก (idiomatic)",en:"cancelled (idiomatic)"}]],
+   tip:{th:"เคล็ดลับ: ดูคำนามที่ตามมา pick up a shell = หยิบจริง, pick up a language = เรียนรู้",en:"Tip: look at the noun: pick up a shell = lift it; pick up a language = learn it."}},
   qs:[
-  {kind:"idiomatic",pv:"call off",mean:"ยกเลิก",q:"The football match was ___ because of the heavy rain.",opts:["called off","called up","called on"],a:0,th:"การแข่งขันฟุตบอลถูกยกเลิกเพราะฝนตกหนัก",why:"called off = ยกเลิก ส่วน called up = โทรหา/เรียกตัว และ called on = แวะเยี่ยม"},
-  {kind:"idiomatic",pv:"pick up",mean:"เรียนรู้ (แบบไม่เป็นทางการ)",q:"I want to ___ some Korean by watching dramas.",opts:["pick up","pick on","pick out"],a:0,th:"ฉันอยากเรียนรู้ภาษาเกาหลีบ้างจากการดูซีรีส์",why:"pick up ที่นี่ = เรียนรู้ (idiomatic) ต่างจากข้อก่อนหน้าที่ pick up = หยิบขึ้น (literal) ส่วน pick on = รังแก"},
-  {kind:"idiomatic",pv:"run out of",mean:"ใช้จนหมด",q:"We have ___ milk. Can you buy some on your way home?",opts:["run out of","run into","run over"],a:0,th:"นมหมดแล้ว ช่วยซื้อระหว่างทางกลับบ้านได้ไหม",why:"run out of = ใช้จนหมด ส่วน run over = ขับรถทับ"},
-  {kind:"idiomatic",pv:"get over",mean:"ผ่านพ้น / หายจาก",q:"She finally ___ her fear of speaking in public.",opts:["got over","got off","got on"],a:0,th:"ในที่สุดเธอก็เอาชนะความกลัวการพูดต่อหน้าคนได้",why:"got over = ผ่านพ้น/หายจาก (idiomatic) ส่วน got off = ลงจาก"}]},
- {id:5,emoji:"🏰",name:"ปราสาทด่านบอส",sub:"แยก literal กับ idiomatic",
-  lesson:{h:"Boss Battle: แยกจากบริบท",p:"ด่านสุดท้าย ประโยคเดียวกันอาจใช้ phrasal verb ต่างความหมาย ใช้เคล็ดลับดูคำนามและสถานการณ์เป็นตัวช่วย",
-   ex:[["The plane <b>took off</b>.","เครื่องบินขึ้นบิน (literal)"],["Her shop <b>took off</b>.","ร้านของเธอไปได้สวย (idiomatic)"],["Look <b>up</b> at the sky.","เงยหน้ามองฟ้า (literal)"]],
-   tip:"เคล็ดลับ: ถามว่า “เกิดขึ้นจริงในทางกายภาพไหม?” ถ้าไม่ใช่ น่าจะเป็น idiomatic"},
+  {kind:"idiomatic",pv:"call off",mean:{th:"ยกเลิก",en:"cancel"},q:"The football match was ___ because of the heavy rain.",opts:["called off","called up","called on"],a:0,th:"การแข่งขันฟุตบอลถูกยกเลิกเพราะฝนตกหนัก",why:{th:"called off = ยกเลิก ส่วน called up = โทรหา/เรียกตัว และ called on = แวะเยี่ยม",en:"called off = cancelled. called up = phone or summon; called on = visit."}},
+  {kind:"idiomatic",pv:"pick up",mean:{th:"เรียนรู้ (แบบไม่เป็นทางการ)",en:"learn casually"},q:"I want to ___ some Korean by watching dramas.",opts:["pick up","pick on","pick out"],a:0,th:"ฉันอยากเรียนรู้ภาษาเกาหลีบ้างจากการดูซีรีส์",why:{th:"pick up ที่นี่ = เรียนรู้ (idiomatic) ต่างจากข้อก่อนหน้าที่ pick up = หยิบขึ้น (literal) ส่วน pick on = รังแก",en:"Here pick up = learn without formal study (idiomatic), unlike the earlier question where it meant lift (literal). pick on = bully."}},
+  {kind:"idiomatic",pv:"run out of",mean:{th:"ใช้จนหมด",en:"use up completely"},q:"We have ___ milk. Can you buy some on your way home?",opts:["run out of","run into","run over"],a:0,th:"นมหมดแล้ว ช่วยซื้อระหว่างทางกลับบ้านได้ไหม",why:{th:"run out of = ใช้จนหมด ส่วน run over = ขับรถทับ",en:"run out of = have none left. run over = hit with a vehicle."}},
+  {kind:"idiomatic",pv:"get over",mean:{th:"ผ่านพ้น / หายจาก",en:"recover from"},q:"She finally ___ her fear of speaking in public.",opts:["got over","got off","got on"],a:0,th:"ในที่สุดเธอก็เอาชนะความกลัวการพูดต่อหน้าคนได้",why:{th:"got over = ผ่านพ้น/หายจาก (idiomatic) ส่วน got off = ลงจาก",en:"got over = recover from (idiomatic). got off = leave a vehicle."}}]},
+ {id:5,emoji:"🏰",name:{th:"ปราสาทด่านบอส",en:"Boss Castle"},sub:{th:"แยก literal กับ idiomatic",en:"Literal vs idiomatic"},
+  lesson:{h:{th:"Boss Battle: แยกจากบริบท",en:"Boss battle: use the context"},
+   p:{th:"ด่านสุดท้าย ประโยคเดียวกันอาจใช้ phrasal verb ต่างความหมาย ใช้เคล็ดลับดูคำนามและสถานการณ์เป็นตัวช่วย",en:"Final level! The same phrasal verb can be literal in one sentence and idiomatic in another. Use the noun and the situation as clues."},
+   ex:[["The plane <b>took off</b>.",{th:"เครื่องบินขึ้นบิน (literal)",en:"left the ground (literal)"}],["Her shop <b>took off</b>.",{th:"ร้านของเธอไปได้สวย (idiomatic)",en:"became successful fast (idiomatic)"}],["Look <b>up</b> at the sky.",{th:"เงยหน้ามองฟ้า (literal)",en:"raise your eyes (literal)"}]],
+   tip:{th:"เคล็ดลับ: ถามว่า “เกิดขึ้นจริงในทางกายภาพไหม?” ถ้าไม่ใช่ น่าจะเป็น idiomatic",en:"Tip: ask “Is this physically happening?” If not, it is probably idiomatic."}},
   qs:[
-  {kind:"idiomatic",pv:"look up",mean:"ค้นหา (ข้อมูล)",q:"Which sentence uses “look up” in an idiomatic meaning?",opts:["She looked up at the colorful kites in the sky.","She looked up the word in a dictionary.","He looked up from his book when I called."],a:1,full:"She looked up the word in a dictionary.",th:"เธอเปิดหาคำนั้นในพจนานุกรม",why:"look up (a word) = ค้นหา เป็น idiomatic ส่วนอีก 2 ประโยคคือเงยหน้ามองจริง ๆ (literal)"},
-  {kind:"idiomatic",pv:"take off",mean:"ไปได้สวย / เติบโตเร็ว",q:"Which sentence uses “take off” in an idiomatic meaning?",opts:["He took off his hat.","Her online shop took off quickly.","The plane took off on time."],a:1,full:"Her online shop took off quickly.",th:"ร้านออนไลน์ของเธอเติบโตอย่างรวดเร็ว",why:"took off = ประสบความสำเร็จอย่างรวดเร็ว (idiomatic) ส่วนถอดหมวกและเครื่องบินขึ้นบินเป็นการกระทำจริง"},
-  {kind:"idiomatic",pv:"make up",mean:"แต่งเรื่องขึ้น",q:"What does “made up” mean? — He made up a story to avoid trouble.",opts:["invented","repaired","folded"],a:0,full:"He made up a story to avoid trouble.",th:"เขาแต่งเรื่องขึ้นมาเพื่อเลี่ยงปัญหา",why:"made up a story = แต่งเรื่องขึ้น (idiomatic) ไม่ได้แปลว่าสร้างตามตัวอักษร"},
-  {kind:"literal",pv:"break up",mean:"แตกออก (ของแข็ง)",q:"In which sentence is “break up” used literally?",opts:["The ice began to break up on the lake.","Anna broke up with her boyfriend.","The meeting broke up at noon."],a:0,full:"The ice began to break up on the lake.",th:"น้ำแข็งบนทะเลสาบเริ่มแตกออก",why:"น้ำแข็งแตกออกจริง ๆ จึงเป็น literal ส่วน broke up with = เลิกกัน และ meeting broke up = ปิดประชุม/แยกย้าย (idiomatic)"}]}
+  {kind:"idiomatic",pv:"look up",mean:{th:"ค้นหา (ข้อมูล)",en:"search for (information)"},q:"Which sentence uses “look up” in an idiomatic meaning?",opts:["She looked up at the colorful kites in the sky.","She looked up the word in a dictionary.","He looked up from his book when I called."],a:1,full:"She looked up the word in a dictionary.",th:"เธอเปิดหาคำนั้นในพจนานุกรม",why:{th:"look up (a word) = ค้นหา เป็น idiomatic ส่วนอีก 2 ประโยคคือเงยหน้ามองจริง ๆ (literal)",en:"look up (a word) = search for it: idiomatic. The other two mean raising your eyes: literal."}},
+  {kind:"idiomatic",pv:"take off",mean:{th:"ไปได้สวย / เติบโตเร็ว",en:"succeed quickly"},q:"Which sentence uses “take off” in an idiomatic meaning?",opts:["He took off his hat.","Her online shop took off quickly.","The plane took off on time."],a:1,full:"Her online shop took off quickly.",th:"ร้านออนไลน์ของเธอเติบโตอย่างรวดเร็ว",why:{th:"took off = ประสบความสำเร็จอย่างรวดเร็ว (idiomatic) ส่วนถอดหมวกและเครื่องบินขึ้นบินเป็นการกระทำจริง",en:"took off = became successful fast (idiomatic). Removing a hat and a plane leaving the ground are physical actions."}},
+  {kind:"idiomatic",pv:"make up",mean:{th:"แต่งเรื่องขึ้น",en:"invent"},q:"What does “made up” mean? — He made up a story to avoid trouble.",opts:["invented","repaired","folded"],a:0,full:"He made up a story to avoid trouble.",th:"เขาแต่งเรื่องขึ้นมาเพื่อเลี่ยงปัญหา",why:{th:"made up a story = แต่งเรื่องขึ้น (idiomatic) ไม่ได้แปลว่าสร้างตามตัวอักษร",en:"made up a story = invented it (idiomatic), not built it physically."}},
+  {kind:"literal",pv:"break up",mean:{th:"แตกออก (ของแข็ง)",en:"split apart (a solid)"},q:"In which sentence is “break up” used literally?",opts:["The ice began to break up on the lake.","Anna broke up with her boyfriend.","The meeting broke up at noon."],a:0,full:"The ice began to break up on the lake.",th:"น้ำแข็งบนทะเลสาบเริ่มแตกออก",why:{th:"น้ำแข็งแตกออกจริง ๆ จึงเป็น literal ส่วน broke up with = เลิกกัน และ meeting broke up = ปิดประชุม/แยกย้าย (idiomatic)",en:"Ice physically splits: literal. broke up with = ended a relationship; the meeting broke up = it ended and people left (idiomatic)."}}]}
 ];
 var TOTAL=BASES.reduce(function(n,b){return n+b.qs.length},0);
 
 /* ============ STATE ============ */
-var state=null, cur=null, busy=false, pendingMode="solo";
+var state=null, cur=null, busy=false, pendingMode="solo", view="sStart";
 function newState(mode,names){
   return {mode:mode,players:names.map(function(n){return {name:n,right:0,wrong:0}}),
     score:0,streak:0,baseIdx:0,qIdx:0,turn:0,done:0,bonuses:0,bestStreak:0,log:[]};
@@ -302,13 +247,14 @@ function curPlayer(){return state.players[state.turn%state.players.length]}
 /* ============ UI helpers ============ */
 var toastT;
 function toast(msg){var t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("on")},2400)}
-function showScreen(id){["sStart","sSetup","sSum"].forEach(function(s){$("#"+s).classList.toggle("on",s===id)});
+function showScreen(id){view=id||"game";["sStart","sSetup","sSum"].forEach(function(s){$("#"+s).classList.toggle("on",s===id)});
   var inGame=!id; $("#hud").classList.toggle("on",inGame); $("#panel").classList.toggle("on",inGame)}
+function applyHud(){$("#hQLbl").textContent=L2("ข้อที่","Question");$("#hScoreLbl").textContent=L2("คะแนน","Score");$("#hDots").title=L2("ตอบถูกติดต่อกัน","Correct in a row");if(state)setHud()}
 function setHud(){
   var b=BASES[state.baseIdx];
-  $("#hBaseSub").textContent="ฐาน "+b.id+" จาก "+BASES.length;
-  $("#hBase").textContent=b.emoji+" "+b.name;
-  $("#hQ").textContent=Math.min(state.done+ (cur&&!cur.answered?1:0),TOTAL)+"/"+TOTAL;
+  $("#hBaseSub").textContent=L2("ฐาน "+b.id+" จาก "+BASES.length,"Base "+b.id+" of "+BASES.length);
+  $("#hBase").textContent=b.emoji+" "+tx(b.name);
+  $("#hQ").textContent=Math.min(state.done+(cur&&!cur.answered?1:0),TOTAL)+"/"+TOTAL;
   $("#hScore").textContent=state.score;
   var d="";for(var i=0;i<STREAK_LEN;i++)d+='<i class="'+(i<state.streak?"f":"")+'"></i>';
   $("#hDots").innerHTML=d;
@@ -318,71 +264,119 @@ function fmt(q){return esc(q).replace("___",'<span class="blank">&nbsp;&nbsp;&nb
 function speak(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
 function fullSentence(q){return q.full||q.q.replace("___",q.opts[q.a])}
 
-/* ============ FLOW ============ */
+/* ============ SCREENS: start / setup / teacher ============ */
+function renderStart(){
+  $("#startCard").innerHTML='<div style="margin-bottom:12px">'+seg()+'</div><div style="font-size:44px" aria-hidden="true">🧭🌲🏙️🏰</div>'
+   +'<h1 class="logo">Phrasal verbs in life<small>'+L2("ผจญภัย 5 ฐาน · ฝึกใช้ Literal และ Idiomatic meaning","A 5-base adventure · practice literal and idiomatic meanings")+'</small></h1>'
+   +'<p class="sub">'+L2("ตอบ 20 ข้อ ข้อละ 1 คะแนน ตอบผิดหัก 1 คะแนน<br>ตอบถูกติดกัน 5 ข้อ คะแนนทั้ง 5 ข้อคูณ 10!","Answer 20 questions: +1 for each correct answer, −1 for each wrong one.<br>Get 5 correct in a row and those 5 points are multiplied by 10!")+'</p>'
+   +'<div class="stack"><button class="btn" id="bSolo">'+L2("🧑 เล่นคนเดียว","🧑 Play solo")+'</button>'
+   +'<button class="btn alt" id="bGroup">'+L2("👥 เล่นกลุ่ม 4 คน","👥 Play in a group of 4")+'</button>'
+   +'<button class="btn ghost" id="bTeacher">'+L2("📋 คู่มือครู / ตัวอย่างโจทย์","📋 Teacher guide / sample questions")+'</button></div>';
+}
 function openSetup(mode){
   pendingMode=mode;
   var n=mode==="group"?4:1, h="";
-  $("#setupTitle").textContent=mode==="group"?"ตั้งชื่อสมาชิกกลุ่ม 4 คน":"ตั้งชื่อผู้เล่น";
-  $("#setupSub").textContent=mode==="group"?"ผู้เล่นสลับกันกดตอบทีละข้อ เพื่อนในทีมช่วยกันคิดได้ คะแนนและคอมโบเป็นของทั้งทีม":"เล่นคนเดียว ตอบให้ถูกติดกันเพื่อรับคะแนนคูณ 10";
-  for(var i=0;i<n;i++)h+='<label class="lbl" for="nm'+i+'">'+(mode==="group"?"สมาชิกคนที่ "+(i+1):"ชื่อของคุณ")+'</label><input type="text" id="nm'+i+'" maxlength="16" placeholder="'+(mode==="group"?"ผู้เล่น "+(i+1):"นักผจญภัย")+'" autocomplete="off">';
-  $("#nameFields").innerHTML=h;
+  for(var i=0;i<n;i++){
+    var lbl=mode==="group"?L2("สมาชิกคนที่ "+(i+1),"Member "+(i+1)):L2("ชื่อของคุณ","Your name");
+    var ph=mode==="group"?L2("ผู้เล่น "+(i+1),"Player "+(i+1)):L2("นักผจญภัย","Adventurer");
+    h+='<label class="lbl" for="nm'+i+'">'+lbl+'</label><input type="text" id="nm'+i+'" maxlength="16" placeholder="'+ph+'" autocomplete="off">';
+  }
+  $("#setupCard").innerHTML='<h2 style="font-size:26px">'+(mode==="group"?L2("ตั้งชื่อสมาชิกกลุ่ม 4 คน","Name your 4 team members"):L2("ตั้งชื่อผู้เล่น","Name the player"))+'</h2>'
+   +'<p class="sub">'+(mode==="group"?L2("ผู้เล่นสลับกันกดตอบทีละข้อ เพื่อนในทีมช่วยกันคิดได้ คะแนนและคอมโบเป็นของทั้งทีม","Players take turns tapping the answer. Teammates can help think. Score and combo belong to the whole team."):L2("เล่นคนเดียว ตอบให้ถูกติดกันเพื่อรับคะแนนคูณ 10","Playing solo. Answer correctly in a row to multiply your points by 10."))+'</p>'
+   +h+'<div class="row stack"><button class="btn ghost" id="bBack">'+L2("ย้อนกลับ","Back")+'</button><button class="btn" id="bGo">'+L2("ออกเดินทาง!","Let's go!")+'</button></div>';
   showScreen("sSetup");
 }
+var TEACH={
+th:'<div class="row" style="align-items:center"><h2 style="font-size:24px">📋 คู่มือครู: Phrasal verbs in life</h2><button class="btn sm ghost" id="bClose" style="flex:none">ปิด</button></div>'
++'<div style="margin-top:10px">%SEG%</div>'
++'<h3>วัตถุประสงค์</h3><p>ให้นักเรียน ม.5 เข้าใจหลักภาษาเรื่อง Phrasal verbs และนำไปใช้ในชีวิตประจำวันได้ โดยแยกความหมายตรงตัว (literal) ออกจากความหมายเชิงสำนวน (idiomatic) ได้จากบริบท</p>'
++'<h3>อุปกรณ์</h3><p>โทรศัพท์ 1 เครื่อง/ผู้เล่น (โหมดเดี่ยว) หรือ 1 เครื่อง/กลุ่ม (โหมดกลุ่ม) เปิดไฟล์เกมนี้ + กระดาษและปากกาสำหรับ Exit ticket</p>'
++'<h3>แผนเวลา 20 นาที</h3><ol><li>2 นาที: ครูอธิบายกติกา แบ่งกลุ่ม 4 คน</li><li>14 นาที: เล่นเกม 5 ฐาน (ฐานละ 4 ข้อ รวม 20 ข้อ) โดยแต่ละฐานมีบทเรียนย่อยก่อนเริ่ม</li><li>4 นาที: สรุปบทเรียนจากหน้าสรุปผล และเขียน Exit ticket</li></ol>'
++'<h3>ฐานทั้ง 5</h3><ul><li>ฐาน 1 ป่า: Literal meaning (การกระทำจริง)</li><li>ฐาน 2 เมือง: Literal meaning ในชีวิตประจำวัน</li><li>ฐาน 3 ลานเวทมนตร์: Idiomatic meaning เบื้องต้น</li><li>ฐาน 4 ชายหาด: คำเดียวกัน ความหมายต่างกัน</li><li>ฐาน 5 ปราสาท (ด่านบอส): แยก literal กับ idiomatic จากบริบท</li></ul>'
++'<h3>กติกาและคะแนน</h3><ul><li>ตอบถูก +1 คะแนน, ตอบผิด −1 คะแนน (คะแนนติดลบได้)</li><li>ตอบถูกติดต่อกัน 5 ข้อ คะแนนของ 5 ข้อนั้นคูณ 10 (5 คะแนน กลายเป็น 50 คะแนน) แล้วเริ่มนับคอมโบใหม่ ตอบผิดเมื่อไรคอมโบรีเซ็ต</li><li>โหมดกลุ่ม: ผู้เล่น 4 คนสลับกันกดตอบทีละข้อ เพื่อนในทีมช่วยกันคิดได้ คะแนนและคอมโบเป็นของทั้งทีม ระบบจะนับจำนวนข้อที่ตอบถูกของแต่ละคนให้</li><li>เลือกภาษา ไทย/English ได้ที่หน้าแรกและหน้าสรุปผล</li></ul>'
++'<h3>ตัวอย่างคำถาม/คำตอบ</h3>'
++'<div class="qa"><b>Literal:</b> Please ___ your shoes before entering the house.<br>ตอบ: <b>take off</b> (ถอดรองเท้า การกระทำจริง)</div>'
++'<div class="qa"><b>Idiomatic:</b> I can\'t ___ the noise anymore.<br>ตอบ: <b>put up with</b> (ทนต่อ ความหมายไม่ได้มาจากคำแต่ละคำ)</div>'
++'<div class="qa"><b>Boss:</b> Which sentence uses “take off” idiomatically?<br>ตอบ: <b>Her online shop took off quickly.</b> (ธุรกิจไปได้สวย)</div>'
++'<h3>วิธีสรุปบทเรียน</h3><ol><li>ดูหน้าสรุป: คะแนน ความแม่นยำ literal เทียบกับ idiomatic และรายการข้อที่พลาด</li><li>ครูถามนำ: “ถ้าเห็นการกระทำจริงได้ในภาพ คือ literal ถ้าต้องแปลเป็นความหมายใหม่ คือ idiomatic ใช่ไหม?”</li><li>Exit ticket บนกระดาษ: เขียน phrasal verb ที่เพิ่งรู้ 1 คำ พร้อมประโยค literal 1 ประโยค และ idiomatic 1 ประโยค ที่เกี่ยวกับชีวิตตัวเอง</li></ol>',
+en:'<div class="row" style="align-items:center"><h2 style="font-size:24px">📋 Teacher guide: Phrasal verbs in life</h2><button class="btn sm ghost" id="bClose" style="flex:none">Close</button></div>'
++'<div style="margin-top:10px">%SEG%</div>'
++'<h3>Objective</h3><p>Help Grade 11 students understand phrasal verbs and use them in everyday life, telling literal meanings apart from idiomatic meanings through context.</p>'
++'<h3>Materials</h3><p>One phone per player (solo mode) or one phone per group (group mode) with this game open, plus paper and pens for the exit ticket.</p>'
++'<h3>20-minute plan</h3><ol><li>2 min: explain the rules and form groups of 4</li><li>14 min: play the 5 bases (4 questions each, 20 in total); every base starts with a mini lesson</li><li>4 min: wrap up with the results screen and write the exit ticket</li></ol>'
++'<h3>The 5 bases</h3><ul><li>Base 1 Forest: literal meaning (real actions)</li><li>Base 2 City: literal meaning in daily life</li><li>Base 3 Magic Plaza: first idiomatic meanings</li><li>Base 4 Beach: same verb, different meanings</li><li>Base 5 Castle (boss): tell literal from idiomatic using context</li></ul>'
++'<h3>Rules and scoring</h3><ul><li>Correct answer +1 point, wrong answer −1 point (the score can go negative)</li><li>Five correct answers in a row: the points of those 5 questions are multiplied by 10 (5 points become 50), then the combo restarts. A wrong answer resets the combo.</li><li>Group mode: 4 players take turns tapping the answer, teammates can help, and score and combo belong to the team. The game counts each player\'s correct answers.</li><li>Language (Thai/English) can be switched on the start screen and the results screen.</li></ul>'
++'<h3>Sample questions and answers</h3>'
++'<div class="qa"><b>Literal:</b> Please ___ your shoes before entering the house.<br>Answer: <b>take off</b> (a real action)</div>'
++'<div class="qa"><b>Idiomatic:</b> I can\'t ___ the noise anymore.<br>Answer: <b>put up with</b> (tolerate; the meaning is not the sum of the words)</div>'
++'<div class="qa"><b>Boss:</b> Which sentence uses “take off” idiomatically?<br>Answer: <b>Her online shop took off quickly.</b> (the business succeeded fast)</div>'
++'<h3>Wrap-up</h3><ol><li>Open the results screen: score, literal vs idiomatic accuracy, and missed items.</li><li>Ask: “If you can picture the real action, it is literal; if you must learn a new meaning, it is idiomatic. Agree?”</li><li>Exit ticket on paper: write 1 new phrasal verb, 1 literal sentence and 1 idiomatic sentence about your own life.</li></ol>'
+};
+function renderTeacher(){$("#teacherCard").innerHTML=TEACH[LANG].replace("%SEG%",seg())}
+function setLang(l){
+  LANG=l;try{localStorage.setItem("pvil-lang",l)}catch(e){}
+  document.documentElement.lang=l;
+  renderStart();renderTeacher();applyHud();
+  if(view==="sSum")showSummary();
+}
+
+/* ============ FLOW ============ */
 function startGame(){
   var n=pendingMode==="group"?4:1, names=[];
-  for(var i=0;i<n;i++){var v=($("#nm"+i).value||"").trim();names.push(v||(pendingMode==="group"?"ผู้เล่น "+(i+1):"นักผจญภัย"))}
+  for(var i=0;i<n;i++){var v=($("#nm"+i).value||"").trim();names.push(v||(pendingMode==="group"?L2("ผู้เล่น ","Player ")+(i+1):L2("นักผจญภัย","Adventurer")))}
   state=newState(pendingMode,names); cur=null; busy=false;
   resetWorld();
   showScreen(null);
   showLesson();
 }
 function showLesson(){
-  var b=BASES[state.baseIdx], L=b.lesson;
-  var ex=L.ex.map(function(e){return '<div>'+e[0]+'<em>'+e[1]+'</em></div>'}).join("");
-  $("#panelCard").innerHTML='<div class="lesson"><span class="badge">'+b.emoji+' ฐาน '+b.id+' · '+esc(b.sub)+'</span><h2>'+esc(L.h)+'</h2><p class="sub" style="margin-top:4px">'+esc(L.p)+'</p><div class="ex">'+ex+'</div><p class="tip">'+esc(L.tip)+'</p>'
-   +(state.mode==="group"?'<p class="tip">ผู้เล่นคนแรกของฐานนี้: <b>'+esc(curPlayer().name)+'</b></p>':'')
-   +'<div class="stack"><button class="btn" id="bStartBase">เริ่มฐาน '+b.id+'</button></div></div>';
+  var b=BASES[state.baseIdx], Ls=b.lesson;
+  var ex=Ls.ex.map(function(e){return '<div>'+e[0]+'<em>'+tx(e[1])+'</em></div>'}).join("");
+  $("#panelCard").innerHTML='<div class="lesson"><span class="badge">'+b.emoji+' '+L2("ฐาน ","Base ")+b.id+' · '+esc(tx(b.sub))+'</span><h2>'+esc(tx(Ls.h))+'</h2><p class="sub" style="margin-top:4px">'+esc(tx(Ls.p))+'</p><div class="ex">'+ex+'</div><p class="tip">'+esc(tx(Ls.tip))+'</p>'
+   +(state.mode==="group"?'<p class="tip">'+L2("ผู้เล่นคนแรกของฐานนี้: ","First player on this base: ")+'<b>'+esc(curPlayer().name)+'</b></p>':'')
+   +'<div class="stack"><button class="btn" id="bStartBase">'+L2("เริ่มฐาน ","Start base ")+b.id+'</button></div></div>';
   cur=null; setHud();
 }
 function showQuestion(){
-  var b=BASES[state.baseIdx], q=b.qs[state.qIdx], L=["A","B","C"];
+  var b=BASES[state.baseIdx], q=b.qs[state.qIdx], Lt=["A","B","C"];
   var opts=shuffle(q.opts.map(function(t,i){return {t:t,ok:i===q.a}}));
   cur={q:q,opts:opts,answered:false};
-  $("#panelCard").innerHTML='<div class="qhead"><span class="badge">'+b.emoji+' ฐาน '+b.id+' · ข้อ '+(state.qIdx+1)+'/'+b.qs.length+'</span>'
-   +(state.mode==="group"?'<span class="turn">🎤 ตาของ '+esc(curPlayer().name)+'</span>':'')+'</div>'
+  $("#panelCard").innerHTML='<div class="qhead"><span class="badge">'+b.emoji+' '+L2("ฐาน ","Base ")+b.id+' · '+L2("ข้อ ","Q ")+(state.qIdx+1)+'/'+b.qs.length+'</span>'
+   +(state.mode==="group"?'<span class="turn">🎤 '+L2("ตาของ ","Turn: ")+esc(curPlayer().name)+'</span>':'')+'</div>'
    +'<p class="qtext">'+fmt(q.q)+'</p><div class="opts">'
-   +opts.map(function(o,i){return '<button class="opt" data-i="'+i+'"><span class="L">'+L[i]+'</span><span>'+esc(o.t)+'</span></button>'}).join("")
+   +opts.map(function(o,i){return '<button class="opt" data-i="'+i+'"><span class="L">'+Lt[i]+'</span><span>'+esc(o.t)+'</span></button>'}).join("")
    +'</div><div id="fbBox"></div>';
   $("#panelCard").scrollTop=0; setHud();
 }
 function answer(i){
   if(!cur||cur.answered)return;
   cur.answered=true;
-  var o=cur.opts[i], q=cur.q, ok=o.ok, p=curPlayer(), bonusMsg="", delta=0;
+  var o=cur.opts[i], q=cur.q, ok=o.ok, p=curPlayer(), bonusMsg="";
   if(ok){
-    p.right++; state.score+=1; delta=1; state.streak++; if(state.streak>state.bestStreak)state.bestStreak=state.streak;
+    p.right++; state.score+=1; state.streak++; if(state.streak>state.bestStreak)state.bestStreak=state.streak;
     if(state.streak>=STREAK_LEN){
       var extra=STREAK_LEN*STREAK_MULT-STREAK_LEN;
       state.score+=extra; state.bonuses++; state.streak=0;
-      bonusMsg="🔥 คอมโบ "+STREAK_LEN+" ข้อติดกัน! คะแนน "+STREAK_LEN+" ข้อ ×"+STREAK_MULT+" = "+(STREAK_LEN*STREAK_MULT)+" (โบนัส +"+extra+")";
+      bonusMsg=L2("🔥 คอมโบ "+STREAK_LEN+" ข้อติดกัน! คะแนน "+STREAK_LEN+" ข้อ ×"+STREAK_MULT+" = "+(STREAK_LEN*STREAK_MULT)+" (โบนัส +"+extra+")",
+                  "🔥 "+STREAK_LEN+" in a row! Those "+STREAK_LEN+" points ×"+STREAK_MULT+" = "+(STREAK_LEN*STREAK_MULT)+" (bonus +"+extra+")");
       toast("🔥 COMBO ×"+STREAK_MULT+"!  +"+extra); burst(70);
     }else{ burst(14) }
     heroJump();
   }else{
-    p.wrong++; state.score-=1; delta=-1; state.streak=0; heroShake();
+    p.wrong++; state.score-=1; state.streak=0; heroShake();
   }
   state.done++;
   state.log.push({q:q,ok:ok,who:p.name,chosen:o.t});
   var btns=document.querySelectorAll("#panelCard .opt");
   btns.forEach(function(b,idx){b.disabled=true;if(cur.opts[idx].ok)b.classList.add("ok");else if(idx===i)b.classList.add("bad")});
   var full=fullSentence(q), last=(state.qIdx+1>=BASES[state.baseIdx].qs.length), end=last&&state.baseIdx>=BASES.length-1;
-  var tagTxt=q.kind==="literal"?"🧭 Literal · ความหมายตรงตัว":"💡 Idiomatic · ความหมายเชิงสำนวน";
-  $("#fbBox").innerHTML='<div class="fb '+(ok?"ok":"bad")+'"><h3>'+(ok?"✅ ถูกต้อง! +1":"❌ ยังไม่ใช่ −1")+'</h3>'
+  var tagTxt=q.kind==="literal"?L2("🧭 Literal · ความหมายตรงตัว","🧭 Literal · the real, direct meaning"):L2("💡 Idiomatic · ความหมายเชิงสำนวน","💡 Idiomatic · a figurative, set meaning");
+  $("#fbBox").innerHTML='<div class="fb '+(ok?"ok":"bad")+'"><h3>'+(ok?L2("✅ ถูกต้อง! +1","✅ Correct! +1"):L2("❌ ยังไม่ใช่ −1","❌ Not quite. −1"))+'</h3>'
    +(bonusMsg?'<div class="combo">'+bonusMsg+'</div>':'')
-   +'<div class="en">'+esc(full)+'</div><div class="th">'+esc(q.th)+'</div>'
+   +'<div class="en">'+esc(full)+'</div>'+(LANG==="th"?'<div class="th">'+esc(q.th)+'</div>':'')
    +'<span class="tag '+q.kind+'">'+tagTxt+'</span>'
-   +'<p class="why"><b>'+esc(q.pv)+'</b> = '+esc(q.mean)+'<br>'+esc(q.why)+'</p>'
-   +'<div class="row stack"><button class="btn ghost" id="bSpeak">🔊 ฟังประโยค</button><button class="btn" id="bNext">'+(end?"ดูสรุปผล":last?"ผ่านฐานนี้ ▶":"ข้อต่อไป ▶")+'</button></div></div>';
+   +'<p class="why"><b>'+esc(q.pv)+'</b> = '+esc(tx(q.mean))+'<br>'+esc(tx(q.why))+'</p>'
+   +'<div class="row stack"><button class="btn ghost" id="bSpeak">'+L2("🔊 ฟังประโยค","🔊 Listen")+'</button><button class="btn" id="bNext">'+(end?L2("ดูสรุปผล","See results"):last?L2("ผ่านฐานนี้ ▶","Finish this base ▶"):L2("ข้อต่อไป ▶","Next question ▶"))+'</button></div></div>';
   setHud();
   $("#panelCard").scrollTo({top:$("#panelCard").scrollHeight,behavior:"smooth"});
   state._lastFull=full;
@@ -393,10 +387,10 @@ function next(){
   var b=BASES[state.baseIdx];
   if(state.qIdx+1<b.qs.length){state.qIdx++;showQuestion();return}
   if(state.baseIdx>=BASES.length-1){markDone(state.baseIdx);burst(120);cur=null;busy=true;setTimeout(function(){busy=false;showSummary()},1300);
-    $("#panelCard").innerHTML='<h2 style="text-align:center">🏰 ถึงปราสาทแล้ว! ภารกิจสำเร็จ</h2>';return}
+    $("#panelCard").innerHTML='<h2 style="text-align:center">'+L2("🏰 ถึงปราสาทแล้ว! ภารกิจสำเร็จ","🏰 You reached the castle! Mission complete")+'</h2>';return}
   busy=true; markDone(state.baseIdx); burst(50);
   var nb=BASES[state.baseIdx+1];
-  $("#panelCard").innerHTML='<div style="text-align:center"><h2>🎉 ผ่านฐาน '+b.id+' แล้ว!</h2><p class="sub">กำลังเดินทางไปฐาน '+nb.id+': '+nb.emoji+' '+esc(nb.name)+'</p></div>';
+  $("#panelCard").innerHTML='<div style="text-align:center"><h2>'+L2("🎉 ผ่านฐาน "+b.id+" แล้ว!","🎉 Base "+b.id+" cleared!")+'</h2><p class="sub">'+L2("กำลังเดินทางไปฐาน ","Traveling to base ")+nb.id+': '+nb.emoji+' '+esc(tx(nb.name))+'</p></div>';
   cur=null;
   walkTo(state.baseIdx+1).then(function(){state.baseIdx++;state.qIdx=0;busy=false;showLesson()});
 }
@@ -405,58 +399,62 @@ function next(){
 function pct(a,b){return b?Math.round(a/b*100):0}
 function showSummary(){
   showScreen("sSum");
-  var L=state.log, right=L.filter(function(x){return x.ok}).length, acc=pct(right,L.length);
-  var lit=L.filter(function(x){return x.q.kind==="literal"}), idi=L.filter(function(x){return x.q.kind==="idiomatic"});
+  var Lg=state.log, right=Lg.filter(function(x){return x.ok}).length, acc=pct(right,Lg.length);
+  var lit=Lg.filter(function(x){return x.q.kind==="literal"}), idi=Lg.filter(function(x){return x.q.kind==="idiomatic"});
   var litR=lit.filter(function(x){return x.ok}).length, idiR=idi.filter(function(x){return x.ok}).length;
   var rank=state.score>=150?"👑 Phrasal Verb Master":state.score>=80?"🏆 Adventure Pro":state.score>=30?"⭐ Rising Explorer":"🌱 Keep Exploring";
   var stars=acc>=85?"★★★":acc>=60?"★★☆":"★☆☆";
-  var h='<div class="sum">';
-  h+='<div class="card" style="max-width:none;text-align:center"><div class="stars" aria-label="ดาว">'+stars+'</div><p class="rank">'+rank+'</p><p class="sub" style="margin-top:6px">'+(state.mode==="group"?"ทีม "+state.players.map(function(p){return esc(p.name)}).join(", "):esc(state.players[0].name))+'</p>'
-   +'<div class="big" style="margin-top:12px">'+state.score+'</div><p class="sub">คะแนนรวม · ถูก '+right+'/'+L.length+' ข้อ ('+acc+'%) · คอมโบ ×'+STREAK_MULT+' ได้ '+state.bonuses+' ครั้ง</p></div>';
-  h+='<div class="card" style="max-width:none"><p class="sec">ความแม่นยำแยกตามประเภท</p>'
-   +'<div class="meter lit"><div class="t"><span>🧭 Literal (ความหมายตรงตัว)</span><b>'+litR+'/'+lit.length+'</b></div><div class="b"><i style="width:'+pct(litR,lit.length)+'%"></i></div></div>'
-   +'<div class="meter idi"><div class="t"><span>💡 Idiomatic (ความหมายเชิงสำนวน)</span><b>'+idiR+'/'+idi.length+'</b></div><div class="b"><i style="width:'+pct(idiR,idi.length)+'%"></i></div></div>'
-   +'<p class="sub">'+(pct(litR,lit.length)>pct(idiR,idi.length)?"ทีมเก่ง literal มากกว่า ลองฝึกจำ idiomatic เป็นก้อนเพิ่ม":pct(litR,lit.length)<pct(idiR,idi.length)?"ทีมเก่ง idiomatic มากกว่า ลองสังเกตทิศทางของ particle ใน literal เพิ่ม":"ทั้งสองประเภทพอ ๆ กัน เยี่ยมมาก!")+'</p></div>';
+  var names=state.players.map(function(p){return esc(p.name)}).join(", ");
+  var h='<div class="sum"><div style="text-align:right">'+seg()+'</div>';
+  h+='<div class="card" style="max-width:none;text-align:center"><div class="stars" aria-label="stars">'+stars+'</div><p class="rank">'+rank+'</p><p class="sub" style="margin-top:6px">'+(state.mode==="group"?L2("ทีม ","Team ")+names:names)+'</p>'
+   +'<div class="big" style="margin-top:12px">'+state.score+'</div><p class="sub">'+L2("คะแนนรวม · ถูก "+right+"/"+Lg.length+" ข้อ ("+acc+"%) · คอมโบ ×"+STREAK_MULT+" ได้ "+state.bonuses+" ครั้ง","Total score · "+right+"/"+Lg.length+" correct ("+acc+"%) · ×"+STREAK_MULT+" combo earned "+state.bonuses+" time"+(state.bonuses===1?"":"s"))+'</p></div>';
+  var fb=pct(litR,lit.length)>pct(idiR,idi.length)?L2("ทีมเก่ง literal มากกว่า ลองฝึกจำ idiomatic เป็นก้อนเพิ่ม","Stronger at literal meanings. Practice memorizing idioms as whole chunks."):pct(litR,lit.length)<pct(idiR,idi.length)?L2("ทีมเก่ง idiomatic มากกว่า ลองสังเกตทิศทางของ particle ใน literal เพิ่ม","Stronger at idiomatic meanings. Watch the direction of the particle in literal uses."):L2("ทั้งสองประเภทพอ ๆ กัน เยี่ยมมาก!","Both types are about equal. Great job!");
+  h+='<div class="card" style="max-width:none"><p class="sec">'+L2("ความแม่นยำแยกตามประเภท","Accuracy by type")+'</p>'
+   +'<div class="meter lit"><div class="t"><span>'+L2("🧭 Literal (ความหมายตรงตัว)","🧭 Literal (direct meaning)")+'</span><b>'+litR+'/'+lit.length+'</b></div><div class="b"><i style="width:'+pct(litR,lit.length)+'%"></i></div></div>'
+   +'<div class="meter idi"><div class="t"><span>'+L2("💡 Idiomatic (ความหมายเชิงสำนวน)","💡 Idiomatic (figurative meaning)")+'</span><b>'+idiR+'/'+idi.length+'</b></div><div class="b"><i style="width:'+pct(idiR,idi.length)+'%"></i></div></div>'
+   +'<p class="sub">'+fb+'</p></div>';
   if(state.mode==="group"){
     var ps=state.players.slice().sort(function(a,b){return b.right-a.right}), top=ps[0].right;
-    h+='<div class="card" style="max-width:none"><p class="sec">สมาชิกในทีม</p><div class="scroller"><table><tr><th>ชื่อ</th><th>ตอบถูก</th><th>ตอบผิด</th></tr>'
+    h+='<div class="card" style="max-width:none"><p class="sec">'+L2("สมาชิกในทีม","Team members")+'</p><div class="scroller"><table><tr><th>'+L2("ชื่อ","Name")+'</th><th>'+L2("ตอบถูก","Correct")+'</th><th>'+L2("ตอบผิด","Wrong")+'</th></tr>'
      +ps.map(function(p){return '<tr><td>'+(p.right===top&&top>0?"👑 ":"")+esc(p.name)+'</td><td>✅ '+p.right+'</td><td>❌ '+p.wrong+'</td></tr>'}).join("")+'</table></div></div>';
   }
   var seen={}, chips="";
-  state.log.forEach(function(x){var k=x.q.pv+"|"+x.q.mean;if(seen[k])return;seen[k]=1;chips+='<div class="chip '+x.q.kind+'"><b>'+esc(x.q.pv)+'</b><small>'+esc(x.q.mean)+'</small></div>'});
-  h+='<div class="card" style="max-width:none"><p class="sec">Phrasal verbs ที่เจอวันนี้</p><p class="sub" style="margin-top:2px">สีฟ้า = literal, สีส้ม = idiomatic</p><div class="chips">'+chips+'</div></div>';
-  var miss=L.filter(function(x){return !x.ok});
-  h+='<div class="card" style="max-width:none"><p class="sec">ทบทวนข้อที่พลาด ('+miss.length+')</p>'
-   +(miss.length?miss.map(function(x){return '<div class="miss"><b>'+esc(fullSentence(x.q))+'</b><br>'+esc(x.q.th)+'<br>'+esc(x.q.pv)+' = '+esc(x.q.mean)+'</div>'}).join(""):'<p class="sub">ไม่มีข้อที่พลาดเลย เก่งมาก!</p>')+'</div>';
-  h+='<div class="card" style="max-width:none"><p class="sec">สรุปบทเรียน</p><ul class="check">'
-   +'<li><span>1️⃣</span><span>Phrasal verb = Verb + Particle ความหมายเปลี่ยนไปตาม particle และบริบท</span></li>'
-   +'<li><span>2️⃣</span><span><b>Literal</b>: เป็นการกระทำจริง เห็นภาพได้ เช่น take off your shoes, put on a jacket</span></li>'
-   +'<li><span>3️⃣</span><span><b>Idiomatic</b>: ต้องจำความหมายใหม่ทั้งก้อน เช่น give up, run into, put up with</span></li>'
-   +'<li><span>4️⃣</span><span>คำเดียวกันอาจมีทั้งสองแบบ เช่น pick up, take off, break up ให้ดูบริบทและคำนามที่ตามมา</span></li></ul>'
-   +'<p class="sec" style="margin-top:16px">Exit ticket (เขียนบนกระดาษ)</p><ul class="check"><li><span>✍️</span><span>เขียน phrasal verb ที่เพิ่งรู้ 1 คำ</span></li><li><span>✍️</span><span>แต่ง 1 ประโยค literal และ 1 ประโยค idiomatic เกี่ยวกับชีวิตของตัวเอง</span></li></ul></div>';
-  h+='<div class="row" style="margin-bottom:8px"><button class="btn" id="bAgain">🔁 เล่นอีกครั้ง</button><button class="btn ghost" id="bHome">กลับหน้าแรก</button></div></div>';
-  $("#sSum").innerHTML=h; $("#sSum").scrollTop=0;
+  state.log.forEach(function(x){var k=x.q.pv+"|"+x.q.mean.en;if(seen[k])return;seen[k]=1;chips+='<div class="chip '+x.q.kind+'"><b>'+esc(x.q.pv)+'</b><small>'+esc(tx(x.q.mean))+'</small></div>'});
+  h+='<div class="card" style="max-width:none"><p class="sec">'+L2("Phrasal verbs ที่เจอวันนี้","Phrasal verbs you met today")+'</p><p class="sub" style="margin-top:2px">'+L2("สีฟ้า = literal, สีส้ม = idiomatic","Blue = literal, orange = idiomatic")+'</p><div class="chips">'+chips+'</div></div>';
+  var miss=Lg.filter(function(x){return !x.ok});
+  h+='<div class="card" style="max-width:none"><p class="sec">'+L2("ทบทวนข้อที่พลาด (","Review your misses (")+miss.length+')</p>'
+   +(miss.length?miss.map(function(x){return '<div class="miss"><b>'+esc(fullSentence(x.q))+'</b><br>'+(LANG==="th"?esc(x.q.th)+'<br>':'')+esc(x.q.pv)+' = '+esc(tx(x.q.mean))+'</div>'}).join(""):'<p class="sub">'+L2("ไม่มีข้อที่พลาดเลย เก่งมาก!","No misses at all. Excellent!")+'</p>')+'</div>';
+  h+='<div class="card" style="max-width:none"><p class="sec">'+L2("สรุปบทเรียน","Lesson recap")+'</p><ul class="check">'
+   +'<li><span>1️⃣</span><span>'+L2("Phrasal verb = Verb + Particle ความหมายเปลี่ยนไปตาม particle และบริบท","A phrasal verb = Verb + Particle. The meaning changes with the particle and the context.")+'</span></li>'
+   +'<li><span>2️⃣</span><span>'+L2("<b>Literal</b>: เป็นการกระทำจริง เห็นภาพได้ เช่น take off your shoes, put on a jacket","<b>Literal</b>: a real action you can picture, e.g. take off your shoes, put on a jacket")+'</span></li>'
+   +'<li><span>3️⃣</span><span>'+L2("<b>Idiomatic</b>: ต้องจำความหมายใหม่ทั้งก้อน เช่น give up, run into, put up with","<b>Idiomatic</b>: a new meaning to memorize as a chunk, e.g. give up, run into, put up with")+'</span></li>'
+   +'<li><span>4️⃣</span><span>'+L2("คำเดียวกันอาจมีทั้งสองแบบ เช่น pick up, take off, break up ให้ดูบริบทและคำนามที่ตามมา","One phrasal verb can have both, e.g. pick up, take off, break up. Check the context and the noun that follows.")+'</span></li></ul>'
+   +'<p class="sec" style="margin-top:16px">'+L2("Exit ticket (เขียนบนกระดาษ)","Exit ticket (write on paper)")+'</p><ul class="check"><li><span>✍️</span><span>'+L2("เขียน phrasal verb ที่เพิ่งรู้ 1 คำ","Write 1 phrasal verb you just learned")+'</span></li><li><span>✍️</span><span>'+L2("แต่ง 1 ประโยค literal และ 1 ประโยค idiomatic เกี่ยวกับชีวิตของตัวเอง","Write 1 literal and 1 idiomatic sentence about your own life")+'</span></li></ul></div>';
+  h+='<div class="row" style="margin-bottom:8px"><button class="btn" id="bAgain">'+L2("🔁 เล่นอีกครั้ง","🔁 Play again")+'</button><button class="btn ghost" id="bHome">'+L2("กลับหน้าแรก","Back to home")+'</button></div></div>';
+  var sc=$("#sSum").scrollTop;
+  $("#sSum").innerHTML=h; $("#sSum").scrollTop=sc;
 }
 
 /* ============ EVENTS ============ */
-$("#bSolo").onclick=function(){openSetup("solo")};
-$("#bGroup").onclick=function(){openSetup("group")};
-$("#bTeacher").onclick=function(){$("#mTeacher").classList.add("on")};
-$("#bClose").onclick=function(){$("#mTeacher").classList.remove("on")};
-$("#bBack").onclick=function(){showScreen("sStart")};
-$("#bGo").onclick=startGame;
-$("#panelCard").addEventListener("click",function(e){
+document.addEventListener("click",function(e){
   var t=e.target.closest("button"); if(!t)return;
+  if(t.dataset.lang){setLang(t.dataset.lang);return}
+  var id=t.id;
   if(t.classList.contains("opt"))answer(+t.dataset.i);
-  else if(t.id==="bStartBase")showQuestion();
-  else if(t.id==="bNext")next();
-  else if(t.id==="bSpeak")speak(state._lastFull||"");
+  else if(id==="bSolo")openSetup("solo");
+  else if(id==="bGroup")openSetup("group");
+  else if(id==="bTeacher"){renderTeacher();$("#mTeacher").classList.add("on")}
+  else if(id==="bClose")$("#mTeacher").classList.remove("on");
+  else if(id==="bBack")showScreen("sStart");
+  else if(id==="bGo")startGame();
+  else if(id==="bStartBase")showQuestion();
+  else if(id==="bNext")next();
+  else if(id==="bSpeak")speak(state._lastFull||"");
+  else if(id==="bAgain")startGame();
+  else if(id==="bHome"){resetWorld();showScreen("sStart")}
 });
-$("#sSum").addEventListener("click",function(e){
-  var t=e.target.closest("button"); if(!t)return;
-  if(t.id==="bAgain"){startGame()}
-  else if(t.id==="bHome"){resetWorld();showScreen("sStart")}
-});
+
+document.documentElement.lang=LANG;renderStart();renderTeacher();applyHud();
 
 /* ============ 3D WORLD ============ */
 var R=null,S,C,hero,legL,legR,clock,walk=null,jumpT=-1,shakeT=-1,floaters=[],doneStars=[],particles=[];
