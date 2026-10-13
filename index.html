@@ -143,6 +143,16 @@ th{color:var(--muted);font-weight:500;font-size:14px}
 .seg button{font-family:inherit;font-size:15px;font-weight:600;border:0;padding:6px 16px;background:transparent;color:var(--ink);cursor:pointer}
 .seg button.on{background:var(--violet);color:#fff}
 .seg button:focus-visible{outline:4px solid var(--violet);outline-offset:-4px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi{background:var(--chip);border-radius:14px;padding:10px 12px}
+.kpi b{font-size:26px;display:block;line-height:1.15}
+.kpi span{font-size:13px;color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pb{font-family:inherit;font-size:15px;font-weight:600;border:3px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);padding:5px 14px;cursor:pointer}
+.pb.on{background:var(--sun);color:var(--sun-ink)}
+.pb:focus-visible{outline:4px solid var(--violet);outline-offset:2px}
+.vrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}
+.vacc{text-align:right;font-size:15px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -163,6 +173,7 @@ th{color:var(--muted);font-weight:500;font-size:14px}
 <section class="screen" id="sSetup"><div class="center"><div class="card" id="setupCard"></div></div></section>
 <div id="panel"><div class="card" id="panelCard"></div></div>
 <section class="screen" id="sSum"></section>
+<section class="screen" id="sStats"></section>
 <div class="mod" id="mTeacher"><div class="card" id="teacherCard"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -247,7 +258,7 @@ function curPlayer(){return state.players[state.turn%state.players.length]}
 /* ============ UI helpers ============ */
 var toastT;
 function toast(msg){var t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("on")},2400)}
-function showScreen(id){view=id||"game";["sStart","sSetup","sSum"].forEach(function(s){$("#"+s).classList.toggle("on",s===id)});
+function showScreen(id){view=id||"game";["sStart","sSetup","sSum","sStats"].forEach(function(s){$("#"+s).classList.toggle("on",s===id)});
   var inGame=!id; $("#hud").classList.toggle("on",inGame); $("#panel").classList.toggle("on",inGame)}
 function applyHud(){$("#hQLbl").textContent=L2("ข้อที่","Question");$("#hScoreLbl").textContent=L2("คะแนน","Score");$("#hDots").title=L2("ตอบถูกติดต่อกัน","Correct in a row");if(state)setHud()}
 function setHud(){
@@ -271,6 +282,7 @@ function renderStart(){
    +'<p class="sub">'+L2("ตอบ 20 ข้อ ข้อละ 1 คะแนน ตอบผิดหัก 1 คะแนน<br>ตอบถูกติดกัน 5 ข้อ คะแนนทั้ง 5 ข้อคูณ 10!","Answer 20 questions: +1 for each correct answer, −1 for each wrong one.<br>Get 5 correct in a row and those 5 points are multiplied by 10!")+'</p>'
    +'<div class="stack"><button class="btn" id="bSolo">'+L2("🧑 เล่นคนเดียว","🧑 Play solo")+'</button>'
    +'<button class="btn alt" id="bGroup">'+L2("👥 เล่นกลุ่ม 4 คน","👥 Play in a group of 4")+'</button>'
+   +'<button class="btn ghost" id="bStats">'+L2("📊 สถิติผู้เล่น","📊 Player stats")+'</button>'
    +'<button class="btn ghost" id="bTeacher">'+L2("📋 คู่มือครู / ตัวอย่างโจทย์","📋 Teacher guide / sample questions")+'</button></div>';
 }
 function openSetup(mode){
@@ -318,13 +330,14 @@ function setLang(l){
   document.documentElement.lang=l;
   renderStart();renderTeacher();applyHud();
   if(view==="sSum")showSummary();
+  if(view==="sStats")renderStats();
 }
 
 /* ============ FLOW ============ */
 function startGame(){
   var n=pendingMode==="group"?4:1, names=[];
   for(var i=0;i<n;i++){var v=($("#nm"+i).value||"").trim();names.push(v||(pendingMode==="group"?L2("ผู้เล่น ","Player ")+(i+1):L2("นักผจญภัย","Adventurer")))}
-  state=newState(pendingMode,names); cur=null; busy=false;
+  state=newState(pendingMode,names); state.t0=Date.now(); cur=null; busy=false;
   resetWorld();
   showScreen(null);
   showLesson();
@@ -340,7 +353,7 @@ function showLesson(){
 function showQuestion(){
   var b=BASES[state.baseIdx], q=b.qs[state.qIdx], Lt=["A","B","C"];
   var opts=shuffle(q.opts.map(function(t,i){return {t:t,ok:i===q.a}}));
-  cur={q:q,opts:opts,answered:false};
+  cur={q:q,opts:opts,answered:false,t0:Date.now()};
   $("#panelCard").innerHTML='<div class="qhead"><span class="badge">'+b.emoji+' '+L2("ฐาน ","Base ")+b.id+' · '+L2("ข้อ ","Q ")+(state.qIdx+1)+'/'+b.qs.length+'</span>'
    +(state.mode==="group"?'<span class="turn">🎤 '+L2("ตาของ ","Turn: ")+esc(curPlayer().name)+'</span>':'')+'</div>'
    +'<p class="qtext">'+fmt(q.q)+'</p><div class="opts">'
@@ -366,7 +379,7 @@ function answer(i){
     p.wrong++; state.score-=1; state.streak=0; heroShake();
   }
   state.done++;
-  state.log.push({q:q,ok:ok,who:p.name,chosen:o.t});
+  state.log.push({q:q,ok:ok,who:p.name,pi:state.turn%state.players.length,ms:Math.min(Date.now()-cur.t0,120000),chosen:o.t});
   var btns=document.querySelectorAll("#panelCard .opt");
   btns.forEach(function(b,idx){b.disabled=true;if(cur.opts[idx].ok)b.classList.add("ok");else if(idx===i)b.classList.add("bad")});
   var full=fullSentence(q), last=(state.qIdx+1>=BASES[state.baseIdx].qs.length), end=last&&state.baseIdx>=BASES.length-1;
@@ -399,6 +412,7 @@ function next(){
 function pct(a,b){return b?Math.round(a/b*100):0}
 function showSummary(){
   showScreen("sSum");
+  if(!state.saved){state.saved=true;state.rec=saveStats()}
   var Lg=state.log, right=Lg.filter(function(x){return x.ok}).length, acc=pct(right,Lg.length);
   var lit=Lg.filter(function(x){return x.q.kind==="literal"}), idi=Lg.filter(function(x){return x.q.kind==="idiomatic"});
   var litR=lit.filter(function(x){return x.ok}).length, idiR=idi.filter(function(x){return x.ok}).length;
@@ -409,6 +423,7 @@ function showSummary(){
   h+='<div class="card" style="max-width:none;text-align:center"><div class="stars" aria-label="stars">'+stars+'</div><p class="rank">'+rank+'</p><p class="sub" style="margin-top:6px">'+(state.mode==="group"?L2("ทีม ","Team ")+names:names)+'</p>'
    +'<div class="big" style="margin-top:12px">'+state.score+'</div><p class="sub">'+L2("คะแนนรวม · ถูก "+right+"/"+Lg.length+" ข้อ ("+acc+"%) · คอมโบ ×"+STREAK_MULT+" ได้ "+state.bonuses+" ครั้ง","Total score · "+right+"/"+Lg.length+" correct ("+acc+"%) · ×"+STREAK_MULT+" combo earned "+state.bonuses+" time"+(state.bonuses===1?"":"s"))+'</p></div>';
   var fb=pct(litR,lit.length)>pct(idiR,idi.length)?L2("ทีมเก่ง literal มากกว่า ลองฝึกจำ idiomatic เป็นก้อนเพิ่ม","Stronger at literal meanings. Practice memorizing idioms as whole chunks."):pct(litR,lit.length)<pct(idiR,idi.length)?L2("ทีมเก่ง idiomatic มากกว่า ลองสังเกตทิศทางของ particle ใน literal เพิ่ม","Stronger at idiomatic meanings. Watch the direction of the particle in literal uses."):L2("ทั้งสองประเภทพอ ๆ กัน เยี่ยมมาก!","Both types are about equal. Great job!");
+  h+=recCard();
   h+='<div class="card" style="max-width:none"><p class="sec">'+L2("ความแม่นยำแยกตามประเภท","Accuracy by type")+'</p>'
    +'<div class="meter lit"><div class="t"><span>'+L2("🧭 Literal (ความหมายตรงตัว)","🧭 Literal (direct meaning)")+'</span><b>'+litR+'/'+lit.length+'</b></div><div class="b"><i style="width:'+pct(litR,lit.length)+'%"></i></div></div>'
    +'<div class="meter idi"><div class="t"><span>'+L2("💡 Idiomatic (ความหมายเชิงสำนวน)","💡 Idiomatic (figurative meaning)")+'</span><b>'+idiR+'/'+idi.length+'</b></div><div class="b"><i style="width:'+pct(idiR,idi.length)+'%"></i></div></div>'
@@ -430,15 +445,146 @@ function showSummary(){
    +'<li><span>3️⃣</span><span>'+L2("<b>Idiomatic</b>: ต้องจำความหมายใหม่ทั้งก้อน เช่น give up, run into, put up with","<b>Idiomatic</b>: a new meaning to memorize as a chunk, e.g. give up, run into, put up with")+'</span></li>'
    +'<li><span>4️⃣</span><span>'+L2("คำเดียวกันอาจมีทั้งสองแบบ เช่น pick up, take off, break up ให้ดูบริบทและคำนามที่ตามมา","One phrasal verb can have both, e.g. pick up, take off, break up. Check the context and the noun that follows.")+'</span></li></ul>'
    +'<p class="sec" style="margin-top:16px">'+L2("Exit ticket (เขียนบนกระดาษ)","Exit ticket (write on paper)")+'</p><ul class="check"><li><span>✍️</span><span>'+L2("เขียน phrasal verb ที่เพิ่งรู้ 1 คำ","Write 1 phrasal verb you just learned")+'</span></li><li><span>✍️</span><span>'+L2("แต่ง 1 ประโยค literal และ 1 ประโยค idiomatic เกี่ยวกับชีวิตของตัวเอง","Write 1 literal and 1 idiomatic sentence about your own life")+'</span></li></ul></div>';
-  h+='<div class="row" style="margin-bottom:8px"><button class="btn" id="bAgain">'+L2("🔁 เล่นอีกครั้ง","🔁 Play again")+'</button><button class="btn ghost" id="bHome">'+L2("กลับหน้าแรก","Back to home")+'</button></div></div>';
+  h+='<div class="row" style="margin-bottom:8px"><button class="btn" id="bAgain">'+L2("🔁 เล่นอีกครั้ง","🔁 Play again")+'</button><button class="btn ghost" id="bHome">'+L2("กลับหน้าแรก","Back to home")+'</button></div><button class="btn alt" id="bStatsFromSum" style="margin-bottom:8px">'+L2("📊 ดูสถิติผู้เล่น","📊 View player stats")+'</button></div>';
   var sc=$("#sSum").scrollTop;
   $("#sSum").innerHTML=h; $("#sSum").scrollTop=sc;
+}
+
+/* ============ PLAYER STATS ============ */
+var SKEY="pvil-stats-v1", memStats=null, statsSel="__all", statsFrom="sStart", resetArmed=false;
+var VMAP={};
+BASES.forEach(function(b){b.qs.forEach(function(q){VMAP[q.pv+"|"+q.kind]={pv:q.pv,kind:q.kind,mean:q.mean}})});
+function getStats(){
+  if(!memStats){
+    try{var s=JSON.parse(localStorage.getItem(SKEY));if(s&&s.players&&s.history)memStats=s}catch(e){}
+    if(!memStats)memStats={players:{},history:[]};
+  }
+  return memStats;
+}
+function persist(){try{localStorage.setItem(SKEY,JSON.stringify(memStats));return true}catch(e){return false}}
+function pkey(n){return String(n).trim().toLowerCase()}
+function blankP(name){return {name:name,games:0,teamGames:0,answered:0,correct:0,lit:[0,0],idi:[0,0],bestSolo:null,bestStreak:0,combos:0,ms:0,msN:0,last:0,verbs:{}}}
+function saveStats(){
+  var S0=getStats(), res={newBest:false,prevBest:null,saved:false};
+  var dur=Math.round((Date.now()-state.t0)/1000);
+  var right=state.log.filter(function(x){return x.ok}).length;
+  state.players.forEach(function(pl,idx){
+    var k=pkey(pl.name), p=S0.players[k]||(S0.players[k]=blankP(pl.name));
+    p.name=pl.name; p.games++; p.last=Date.now();
+    if(state.mode==="group")p.teamGames++;
+    state.log.forEach(function(x){
+      if(x.pi!==idx)return;
+      p.answered++; if(x.ok)p.correct++;
+      var arr=x.q.kind==="literal"?p.lit:p.idi; arr[0]++; if(x.ok)arr[1]++;
+      var vk=x.q.pv+"|"+x.q.kind, v=p.verbs[vk]||(p.verbs[vk]={a:0,c:0}); v.a++; if(x.ok)v.c++;
+      p.ms+=x.ms; p.msN++;
+    });
+    if(state.bestStreak>p.bestStreak)p.bestStreak=state.bestStreak;
+    p.combos+=state.bonuses;
+    if(state.mode==="solo"){
+      res.prevBest=p.bestSolo;
+      if(p.bestSolo===null||state.score>p.bestSolo){res.newBest=p.bestSolo!==null;p.bestSolo=state.score}
+    }
+  });
+  S0.history.unshift({t:Date.now(),mode:state.mode,names:state.players.map(function(p){return p.name}),keys:state.players.map(function(p){return pkey(p.name)}),
+    score:state.score,right:right,total:state.log.length,dur:dur,combos:state.bonuses});
+  if(S0.history.length>100)S0.history.length=100;
+  res.saved=persist();
+  return res;
+}
+function recCard(){
+  var r=state.rec; if(!r)return "";
+  var msg;
+  if(state.mode==="solo"){
+    if(r.newBest)msg=L2("🏅 สถิติใหม่! คะแนนสูงกว่าสถิติเดิม ("+r.prevBest+")","🏅 New personal best! Higher than your previous record ("+r.prevBest+")");
+    else if(r.prevBest!==null)msg=L2("สถิติสูงสุดของคุณคือ "+r.prevBest+" คะแนน เล่นอีกครั้งเพื่อทำลายสถิติ","Your best score is "+r.prevBest+". Play again to beat it!");
+    else msg=L2("นี่คือเกมแรกของคุณ ระบบเริ่มบันทึกสถิติแล้ว","This is your first game. Your stats are now being saved.");
+  }else msg=L2("บันทึกสถิติของสมาชิกทั้ง 4 คนแล้ว","Stats saved for all 4 team members.");
+  return '<div class="card" style="max-width:none"><p class="sec">'+L2("📊 บันทึกสถิติแล้ว","📊 Stats saved")+'</p><p class="sub" style="margin-top:2px">'+msg+'</p>'
+   +(r.saved?'<p class="sub" style="font-size:14px">'+L2("สถิติเก็บไว้ในเบราว์เซอร์ของเครื่องนี้","Stats are stored in this device's browser.")+'</p>':'<p class="sub">'+L2("เบราว์เซอร์นี้ไม่อนุญาตให้บันทึกถาวร สถิติจะหายเมื่อปิดหน้านี้","This browser blocked saving, so stats will be lost when you close the page.")+'</p>')+'</div>';
+}
+function pctS(c,a){return a?Math.round(c/a*100):0}
+function fmtDate(t){try{return new Date(t).toLocaleString(LANG==="th"?"th-TH":"en-GB",{dateStyle:"short",timeStyle:"short"})}catch(e){return new Date(t).toISOString().slice(0,16).replace("T"," ")}}
+function fmtDur(s){var m=Math.floor(s/60),r=s%60;return m+":"+(r<10?"0":"")+r}
+function kpi(v,l){return '<div class="kpi"><b>'+v+'</b><span>'+l+'</span></div>'}
+function verbRow(k,v){var i=VMAP[k];if(!i)return "";
+  return '<div class="vrow"><div class="chip '+i.kind+'"><b>'+esc(i.pv)+'</b><small>'+esc(tx(i.mean))+'</small></div><div class="vacc"><b>'+v.c+'/'+v.a+'</b> ('+pctS(v.c,v.a)+'%)</div></div>'}
+function verbCards(verbs,weakTitle,strongTitle){
+  var arr=Object.keys(verbs).filter(function(k){return VMAP[k]&&verbs[k].a>0}).map(function(k){return {k:k,a:verbs[k].a,c:verbs[k].c}});
+  var weak=arr.filter(function(x){return x.c<x.a}).sort(function(x,y){return x.c/x.a-y.c/y.a||y.a-x.a}).slice(0,5);
+  var strong=arr.filter(function(x){return x.c===x.a}).sort(function(x,y){return y.a-x.a}).slice(0,5);
+  function card(title,list,empty){return '<div class="card" style="max-width:none"><p class="sec">'+title+'</p>'+(list.length?list.map(function(x){return verbRow(x.k,x)}).join(""):'<p class="sub">'+empty+'</p>')+'</div>'}
+  return card(weakTitle,weak,L2("ยังไม่มีคำที่พลาด เยี่ยมมาก!","No missed words yet. Excellent!"))+card(strongTitle,strong,L2("ยังไม่มีข้อมูลเพียงพอ","Not enough data yet."));
+}
+function histRows(list){
+  if(!list.length)return '<p class="sub">'+L2("ยังไม่มีประวัติการเล่น","No games played yet.")+'</p>';
+  return '<div class="scroller"><table><tr><th>'+L2("เวลา","When")+'</th><th>'+L2("โหมด","Mode")+'</th><th>'+L2("คะแนน","Score")+'</th><th>'+L2("ถูก","Correct")+'</th><th>'+L2("ใช้เวลา","Time")+'</th></tr>'
+   +list.map(function(h){return '<tr><td>'+esc(fmtDate(h.t))+'</td><td>'+(h.mode==="group"?"👥":"🧑")+' '+esc(h.names.join(", "))+'</td><td><b>'+h.score+'</b></td><td>'+h.right+'/'+h.total+'</td><td>'+fmtDur(h.dur)+'</td></tr>'}).join("")+'</table></div>';
+}
+function openStats(from){
+  statsFrom=from; resetArmed=false; renderStats(); showScreen("sStats"); $("#sStats").scrollTop=0;
+}
+function renderStats(){
+  var S0=getStats(), keys=Object.keys(S0.players), h='<div class="sum">';
+  h+='<div class="row" style="align-items:center"><button class="btn sm ghost" id="bStatsBack" style="flex:none">← '+L2("กลับ","Back")+'</button><div style="flex:none">'+seg()+'</div></div>';
+  h+='<div class="card" style="max-width:none"><h2 style="font-size:26px">'+L2("📊 สถิติผู้เล่น","📊 Player stats")+'</h2><p class="sub">'+L2("สถิติถูกเก็บไว้ในเบราว์เซอร์ของเครื่องนี้เท่านั้น ผู้เล่นที่ใช้ชื่อเดียวกันจะถูกนับรวมกัน","Stats are stored only in this device's browser. Players with the same name are counted together.")+'</p></div>';
+  if(!keys.length){
+    h+='<div class="card" style="max-width:none;text-align:center"><div style="font-size:42px">🗒️</div><p class="sec">'+L2("ยังไม่มีข้อมูล","No data yet")+'</p><p class="sub">'+L2("เล่นเกมให้จบอย่างน้อย 1 รอบ แล้วสถิติจะแสดงที่นี่","Finish at least one game and your stats will appear here.")+'</p></div></div>';
+    $("#sStats").innerHTML=h; return;
+  }
+  if(statsSel!=="__all"&&!S0.players[statsSel])statsSel="__all";
+  var sel=statsSel;
+  h+='<div class="pills"><button class="pb'+(sel==="__all"?" on":"")+'" data-p="__all">'+L2("👥 ภาพรวม","👥 Overview")+'</button>'
+   +keys.map(function(k){return '<button class="pb'+(sel===k?" on":"")+'" data-p="'+esc(k)+'">'+esc(S0.players[k].name)+'</button>'}).join("")+'</div>';
+  if(sel==="__all"){
+    var tot=0,cor=0,allV={};
+    keys.forEach(function(k){var p=S0.players[k];tot+=p.answered;cor+=p.correct;Object.keys(p.verbs).forEach(function(vk){var v=allV[vk]||(allV[vk]={a:0,c:0});v.a+=p.verbs[vk].a;v.c+=p.verbs[vk].c})});
+    h+='<div class="card" style="max-width:none"><div class="kpis">'+kpi(keys.length,L2("ผู้เล่น","Players"))+kpi(S0.history.length,L2("เกมที่เล่น","Games played"))+kpi(tot,L2("ข้อที่ตอบ","Answers"))+kpi(pctS(cor,tot)+"%",L2("ความแม่นยำรวม","Overall accuracy"))+'</div></div>';
+    var ranked=keys.map(function(k){return S0.players[k]}).sort(function(a,b){return pctS(b.correct,b.answered)-pctS(a.correct,a.answered)||b.answered-a.answered});
+    h+='<div class="card" style="max-width:none"><p class="sec">'+L2("อันดับความแม่นยำ","Accuracy ranking")+'</p><div class="scroller"><table><tr><th>'+L2("ชื่อ","Name")+'</th><th>'+L2("เกม","Games")+'</th><th>'+L2("แม่นยำ","Accuracy")+'</th><th>'+L2("สถิติเดี่ยว","Best solo")+'</th></tr>'
+     +ranked.map(function(p,i){return '<tr><td>'+(i===0&&p.answered>0?"👑 ":"")+esc(p.name)+'</td><td>'+p.games+'</td><td>'+pctS(p.correct,p.answered)+'%</td><td>'+(p.bestSolo===null?"-":p.bestSolo)+'</td></tr>'}).join("")+'</table></div></div>';
+    h+=verbCards(allV,L2("🔎 คำที่ควรทบทวนทั้งห้อง","🔎 Words to review (everyone)"),L2("✅ คำที่ตอบถูกทุกครั้ง","✅ Words everyone got right"));
+    h+='<div class="card" style="max-width:none"><p class="sec">'+L2("ประวัติล่าสุด","Recent games")+'</p>'+histRows(S0.history.slice(0,8))+'</div>';
+  }else{
+    var p=S0.players[sel];
+    h+='<div class="card" style="max-width:none"><p class="sec">'+esc(p.name)+'</p><div class="kpis">'
+     +kpi(p.games,L2("เกมที่เล่น","Games played"))+kpi(pctS(p.correct,p.answered)+"%",L2("ความแม่นยำ","Accuracy"))
+     +kpi(p.bestSolo===null?"-":p.bestSolo,L2("คะแนนสูงสุด (เดี่ยว)","Best solo score"))+kpi(p.bestStreak,L2("ถูกติดกันสูงสุด","Best streak"))
+     +kpi(p.msN?(p.ms/p.msN/1000).toFixed(1)+L2(" วิ"," s"):"-",L2("เวลาเฉลี่ยต่อข้อ","Avg. time per question"))+kpi(p.combos,L2("คอมโบ ×10","×10 combos"))+'</div></div>';
+    h+='<div class="card" style="max-width:none"><p class="sec">'+L2("ความแม่นยำแยกตามประเภท","Accuracy by type")+'</p>'
+     +'<div class="meter lit"><div class="t"><span>'+L2("🧭 Literal","🧭 Literal")+'</span><b>'+p.lit[1]+'/'+p.lit[0]+'</b></div><div class="b"><i style="width:'+pctS(p.lit[1],p.lit[0])+'%"></i></div></div>'
+     +'<div class="meter idi"><div class="t"><span>'+L2("💡 Idiomatic","💡 Idiomatic")+'</span><b>'+p.idi[1]+'/'+p.idi[0]+'</b></div><div class="b"><i style="width:'+pctS(p.idi[1],p.idi[0])+'%"></i></div></div></div>';
+    h+=verbCards(p.verbs,L2("🔎 คำที่ควรทบทวน","🔎 Words to review"),L2("✅ คำที่ตอบถูกทุกครั้ง","✅ Words always correct"));
+    h+='<div class="card" style="max-width:none"><p class="sec">'+L2("ประวัติล่าสุด","Recent games")+'</p>'+histRows(S0.history.filter(function(x){return x.keys.indexOf(sel)>=0}).slice(0,6))+'</div>';
+  }
+  h+='<div class="card" style="max-width:none"><p class="sec">'+L2("จัดการข้อมูล","Manage data")+'</p><div class="row stack"><button class="btn alt" id="bCopy">'+L2("📋 คัดลอกข้อมูล (CSV)","📋 Copy data (CSV)")+'</button>'
+   +'<button class="btn ghost" id="bResetStats">'+(resetArmed?L2("⚠️ กดอีกครั้งเพื่อยืนยันการลบ","⚠️ Tap again to confirm delete"):L2("🗑️ ลบสถิติทั้งหมด","🗑️ Delete all stats"))+'</button></div><div id="csvBox"></div></div></div>';
+  var sc=$("#sStats").scrollTop;
+  $("#sStats").innerHTML=h; $("#sStats").scrollTop=sc;
+}
+function buildCsv(){
+  var S0=getStats(), rows=["name,games,answered,correct,accuracy_pct,literal_correct,literal_total,idiomatic_correct,idiomatic_total,best_solo_score,best_combo_streak,avg_seconds_per_question"];
+  function q(s){return '"'+String(s).replace(/"/g,'""')+'"'}
+  var keys=Object.keys(S0.players);
+  keys.forEach(function(k){var p=S0.players[k];
+    rows.push([q(p.name),p.games,p.answered,p.correct,pctS(p.correct,p.answered),p.lit[1],p.lit[0],p.idi[1],p.idi[0],p.bestSolo===null?"":p.bestSolo,p.bestStreak,p.msN?(p.ms/p.msN/1000).toFixed(1):""].join(","))});
+  rows.push("");rows.push("name,phrasal_verb,type,attempts,correct");
+  keys.forEach(function(k){var p=S0.players[k];Object.keys(p.verbs).forEach(function(vk){var i=VMAP[vk];if(!i)return;rows.push([q(p.name),q(i.pv),i.kind,p.verbs[vk].a,p.verbs[vk].c].join(","))})});
+  return rows.join("\n");
+}
+function copyCsv(){
+  var csv=buildCsv();
+  function fallback(){var box=$("#csvBox");if(!box)return;
+    box.innerHTML='<p class="sub">'+L2("คัดลอกข้อความด้านล่างไปวางใน Excel / Google Sheets","Copy the text below into Excel / Google Sheets")+'</p><textarea readonly rows="8" style="width:100%;margin-top:6px;font-family:monospace;font-size:13px;border:3px solid var(--line);border-radius:12px;padding:8px;background:var(--panel);color:var(--ink)">'+esc(csv)+'</textarea>';
+    var ta=box.querySelector("textarea");ta.focus();ta.select()}
+  try{navigator.clipboard.writeText(csv).then(function(){toast(L2("คัดลอกข้อมูลแล้ว","Copied!"));},fallback)}catch(e){fallback()}
 }
 
 /* ============ EVENTS ============ */
 document.addEventListener("click",function(e){
   var t=e.target.closest("button"); if(!t)return;
   if(t.dataset.lang){setLang(t.dataset.lang);return}
+  if(t.dataset.p!==undefined){statsSel=t.dataset.p;resetArmed=false;renderStats();return}
   var id=t.id;
   if(t.classList.contains("opt"))answer(+t.dataset.i);
   else if(id==="bSolo")openSetup("solo");
@@ -451,6 +597,11 @@ document.addEventListener("click",function(e){
   else if(id==="bNext")next();
   else if(id==="bSpeak")speak(state._lastFull||"");
   else if(id==="bAgain")startGame();
+  else if(id==="bStats")openStats("sStart");
+  else if(id==="bStatsFromSum")openStats("sSum");
+  else if(id==="bStatsBack"){if(statsFrom==="sSum")showSummary();else showScreen("sStart")}
+  else if(id==="bCopy")copyCsv();
+  else if(id==="bResetStats"){if(!resetArmed){resetArmed=true;renderStats()}else{memStats={players:{},history:[]};persist();resetArmed=false;statsSel="__all";renderStats();toast(L2("ลบสถิติทั้งหมดแล้ว","All stats deleted"))}}
   else if(id==="bHome"){resetWorld();showScreen("sStart")}
 });
 
