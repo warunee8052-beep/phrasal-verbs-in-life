@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phrasal verbs in life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --panel:#ffffff; --ink:#1b2352; --muted:#5a6390; --line:#1b2352;
+  --sun:#ffd23f; --sun-ink:#3a2c00; --mint:#1fbf8f; --mint-bg:#dcf7ee; --coral:#ee4266; --coral-bg:#fde3e9;
+  --violet:#6c4cf1; --violet-bg:#e9e4ff; --chip:#eef1ff; --shadow:#1b2352;
+  --font:"Kanit","Noto Sans Thai","Sarabun",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --panel:#1b2352; --ink:#f3f5ff; --muted:#b4bcec; --line:#0c1230;
+    --mint-bg:#0f4b3d; --coral-bg:#5a1c2e; --violet-bg:#2f2870; --chip:#2a3573; --shadow:#0c1230;
+  }
+}
+:root[data-theme="dark"]{
+  --panel:#1b2352; --ink:#f3f5ff; --muted:#b4bcec; --line:#0c1230;
+  --mint-bg:#0f4b3d; --coral-bg:#5a1c2e; --violet-bg:#2f2870; --chip:#2a3573; --shadow:#0c1230;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden;background:#9fdcff;font-family:var(--font);color:var(--ink)}
+#c3d{position:fixed;inset:0;width:100%;height:100%;display:block}
+.screen{position:fixed;inset:0;display:none;overflow-y:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 14px calc(16px + env(safe-area-inset-bottom,0px))}
+.screen.on{display:block}
+.center{min-height:100%;display:flex;align-items:center;justify-content:center}
+.card{background:var(--panel);border:3px solid var(--line);border-radius:22px;box-shadow:0 6px 0 var(--shadow);padding:20px;width:100%;max-width:640px}
+h1,h2,h3,p{margin:0}
+.logo{font-size:clamp(30px,8vw,46px);font-weight:700;line-height:1.05;letter-spacing:-.01em}
+.logo small{display:block;font-size:.42em;font-weight:500;color:var(--muted);letter-spacing:0;margin-top:8px}
+.sub{color:var(--muted);margin-top:10px;line-height:1.55}
+.btn{font-family:inherit;font-weight:600;font-size:18px;border:3px solid var(--line);border-bottom-width:6px;border-radius:16px;padding:12px 18px;background:var(--sun);color:var(--sun-ink);cursor:pointer;width:100%;transition:transform .08s}
+.btn:active{transform:translateY(3px);border-bottom-width:3px}
+.btn.alt{background:var(--violet);color:#fff}
+.btn.ghost{background:var(--panel);color:var(--ink)}
+.btn.sm{font-size:15px;padding:8px 14px;width:auto}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible{outline:4px solid var(--violet);outline-offset:2px}
+.stack{display:grid;gap:10px;margin-top:18px}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+input[type=text]{font-family:inherit;font-size:17px;width:100%;padding:11px 14px;border-radius:14px;border:3px solid var(--line);background:var(--panel);color:var(--ink)}
+.lbl{font-size:14px;color:var(--muted);margin:14px 0 6px;display:block}
+.pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.pill{background:var(--chip);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:500}
+
+/* HUD */
+#hud{position:fixed;left:0;right:0;top:0;display:none;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;pointer-events:none;z-index:5}
+#hud.on{display:block}
+.hudbar{max-width:760px;margin:0 auto;display:flex;gap:8px;align-items:stretch}
+.hbox{background:var(--panel);border:3px solid var(--line);border-radius:14px;box-shadow:0 3px 0 var(--shadow);padding:5px 10px;line-height:1.15;min-width:0}
+.hbox b{display:block;font-size:19px}
+.hbox span{font-size:12px;color:var(--muted)}
+.hbox.grow{flex:1}
+.hbox.grow b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dots{display:flex;gap:4px;margin-top:4px}
+.dots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--line);background:var(--chip)}
+.dots i.f{background:var(--sun)}
+.bar{max-width:760px;margin:8px auto 0;height:10px;border-radius:99px;background:var(--panel);border:3px solid var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--mint);transition:width .4s}
+
+/* panel */
+#panel{position:fixed;left:0;right:0;bottom:0;display:none;padding:0 12px calc(12px + env(safe-area-inset-bottom,0px));z-index:5;pointer-events:none}
+#panel.on{display:block}
+#panel .card{margin:0 auto;max-width:760px;max-height:62vh;overflow-y:auto;pointer-events:auto;padding:16px}
+.badge{display:inline-block;background:var(--violet);color:#fff;border-radius:10px;padding:3px 10px;font-size:14px;font-weight:600}
+.turn{margin-left:8px;font-size:15px;color:var(--ink);background:var(--sun);color:var(--sun-ink);border-radius:10px;padding:3px 10px;font-weight:600}
+.qhead{margin-bottom:10px}
+.qtext{font-size:clamp(19px,4.6vw,25px);font-weight:600;line-height:1.4}
+.blank{display:inline-block;min-width:92px;border-bottom:4px solid var(--violet);vertical-align:baseline;margin:0 3px}
+.opts{display:grid;gap:8px;margin-top:14px}
+.opt{font-family:inherit;text-align:left;display:flex;gap:12px;align-items:center;font-size:clamp(16px,4vw,19px);font-weight:500;padding:11px 14px;border-radius:14px;border:3px solid var(--line);border-bottom-width:5px;background:var(--panel);color:var(--ink);cursor:pointer}
+.opt .L{flex:none;width:30px;height:30px;border-radius:9px;background:var(--chip);display:grid;place-items:center;font-weight:700;font-size:15px}
+.opt:not(:disabled):active{transform:translateY(2px)}
+.opt.ok{background:var(--mint-bg);border-color:var(--mint)}
+.opt.ok .L{background:var(--mint);color:#fff}
+.opt.bad{background:var(--coral-bg);border-color:var(--coral)}
+.opt.bad .L{background:var(--coral);color:#fff}
+.opt:disabled{cursor:default}
+.fb{margin-top:14px;border-radius:16px;padding:14px;border:3px solid var(--line)}
+.fb.ok{background:var(--mint-bg);border-color:var(--mint)}
+.fb.bad{background:var(--coral-bg);border-color:var(--coral)}
+.fb h3{font-size:20px}
+.fb .en{font-weight:600;margin-top:8px;font-size:17px}
+.fb .th{color:var(--muted);margin-top:2px}
+.fb .why{margin-top:8px;line-height:1.55}
+.tag{display:inline-block;border-radius:8px;padding:2px 9px;font-size:13px;font-weight:600;margin-top:8px}
+.tag.literal{background:#cfe9ff;color:#0b3a66}
+.tag.idiomatic{background:#ffe3b3;color:#5a3500}
+.combo{margin-top:8px;font-weight:700;color:var(--sun-ink);background:var(--sun);border-radius:10px;padding:6px 10px}
+.lesson h2{font-size:22px;margin:8px 0 4px}
+.ex{display:grid;gap:6px;margin-top:12px}
+.ex div{background:var(--chip);border-radius:12px;padding:8px 12px;line-height:1.4}
+.ex b{color:var(--violet)}
+:root[data-theme="dark"] .ex b{color:#c4b8ff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ex b{color:#c4b8ff}}
+.ex em{display:block;font-style:normal;color:var(--muted);font-size:14px}
+.tip{margin-top:12px;font-size:15px;line-height:1.5;color:var(--muted)}
+
+/* toast */
+#toast{position:fixed;left:50%;top:calc(96px + env(safe-area-inset-top,0px));transform:translate(-50%,-14px);background:var(--sun);color:var(--sun-ink);border:3px solid var(--line);border-radius:16px;box-shadow:0 5px 0 var(--shadow);padding:10px 18px;font-weight:700;font-size:18px;z-index:9;opacity:0;pointer-events:none;transition:.25s;text-align:center;max-width:92vw}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* summary */
+.sum{max-width:760px;margin:0 auto;display:grid;gap:14px}
+.rank{font-size:clamp(26px,7vw,36px);font-weight:700;line-height:1.1}
+.big{font-size:56px;font-weight:700;line-height:1}
+.stars{font-size:34px;letter-spacing:4px}
+.meter{margin-top:10px}
+.meter .t{display:flex;justify-content:space-between;font-size:15px;font-weight:500}
+.meter .b{height:14px;border-radius:99px;border:3px solid var(--line);background:var(--chip);overflow:hidden;margin-top:4px}
+.meter .b i{display:block;height:100%;background:var(--violet)}
+.meter.lit .b i{background:#2f9bff}
+.meter.idi .b i{background:#ff9f1c}
+table{width:100%;border-collapse:collapse;font-size:16px}
+th,td{padding:8px 6px;text-align:left;border-bottom:2px solid var(--chip)}
+th{color:var(--muted);font-weight:500;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{border-radius:12px;padding:6px 10px;font-size:15px;line-height:1.25}
+.chip small{display:block;color:inherit;opacity:.8;font-size:12.5px}
+.chip.literal{background:#cfe9ff;color:#0b3a66}
+.chip.idiomatic{background:#ffe3b3;color:#5a3500}
+.miss{border-left:6px solid var(--coral);background:var(--coral-bg);border-radius:10px;padding:8px 12px;margin-top:8px;line-height:1.5;font-size:15px}
+.check{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.check li{display:flex;gap:10px;line-height:1.5}
+.sec{font-size:20px;font-weight:700;margin-bottom:2px}
+.mod{position:fixed;inset:0;z-index:20;background:rgba(10,15,45,.6);display:none;padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(14px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+.mod.on{display:block}
+.mod .card{margin:0 auto;max-width:720px}
+.mod h3{font-size:19px;margin:18px 0 6px}
+.mod p,.mod li{line-height:1.6}
+.mod ul,.mod ol{padding-left:22px;margin:6px 0}
+.qa{background:var(--chip);border-radius:12px;padding:10px 12px;margin-top:8px;line-height:1.5}
+.scroller{overflow-x:auto}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="c3d" aria-hidden="true"></canvas>
+
+<div id="hud">
+  <div class="hudbar">
+    <div class="hbox grow"><span id="hBaseSub">ฐาน</span><b id="hBase">-</b></div>
+    <div class="hbox"><span>ข้อที่</span><b id="hQ">0/20</b></div>
+    <div class="hbox"><span>คะแนน</span><b id="hScore">0</b><div class="dots" id="hDots" title="ตอบถูกติดต่อกัน"></div></div>
+  </div>
+  <div class="bar"><i id="hBar"></i></div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Start -->
+<section class="screen on" id="sStart">
+  <div class="center">
+    <div class="card" style="text-align:center">
+      <div style="font-size:44px" aria-hidden="true">🧭🌲🏙️🏰</div>
+      <h1 class="logo">Phrasal verbs in life<small>ผจญภัย 5 ฐาน · ฝึกใช้ Literal และ Idiomatic meaning</small></h1>
+      <p class="sub">เดินทางผ่านฐานต่าง ๆ ตอบ 20 ข้อ ข้อละ 1 คะแนน ตอบผิดหัก 1 คะแนน<br>ตอบถูกติดกัน 5 ข้อ คะแนนทั้ง 5 ข้อคูณ 10!</p>
+      <div class="stack">
+        <button class="btn" id="bSolo">🧑 เล่นคนเดียว</button>
+        <button class="btn alt" id="bGroup">👥 เล่นกลุ่ม 4 คน</button>
+        <button class="btn ghost" id="bTeacher">📋 คู่มือครู / ตัวอย่างโจทย์</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Setup -->
+<section class="screen" id="sSetup">
+  <div class="center">
+    <div class="card">
+      <h2 id="setupTitle" style="font-size:26px">ตั้งชื่อผู้เล่น</h2>
+      <p class="sub" id="setupSub"></p>
+      <div id="nameFields"></div>
+      <div class="row stack">
+        <button class="btn ghost" id="bBack">ย้อนกลับ</button>
+        <button class="btn" id="bGo">ออกเดินทาง!</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Game panel -->
+<div id="panel"><div class="card" id="panelCard"></div></div>
+
+<!-- Summary -->
+<section class="screen" id="sSum"></section>
+
+<!-- Teacher -->
+<div class="mod" id="mTeacher">
+  <div class="card">
+    <div class="row" style="align-items:center"><h2 style="font-size:24px">📋 คู่มือครู: Phrasal verbs in life</h2><button class="btn sm ghost" id="bClose" style="flex:none">ปิด</button></div>
+    <h3>วัตถุประสงค์</h3>
+    <p>ให้นักเรียน ม.5 เข้าใจหลักภาษาเรื่อง Phrasal verbs และนำไปใช้ในชีวิตประจำวันได้ โดยแยกความหมายตรงตัว (literal) ออกจากความหมายเชิงสำนวน (idiomatic) ได้จากบริบท</p>
+    <h3>อุปกรณ์</h3>
+    <p>โทรศัพท์ 1 เครื่อง/ผู้เล่น (โหมดเดี่ยว) หรือ 1 เครื่อง/กลุ่ม (โหมดกลุ่ม) เปิดไฟล์เกมนี้ + กระดาษและปากกาสำหรับ Exit ticket</p>
+    <h3>แผนเวลา 20 นาที</h3>
+    <ol>
+      <li>2 นาที: ครูอธิบายกติกา แบ่งกลุ่ม 4 คน</li>
+      <li>14 นาที: เล่นเกม 5 ฐาน (ฐานละ 4 ข้อ รวม 20 ข้อ) โดยแต่ละฐานมีบทเรียนย่อยก่อนเริ่ม</li>
+      <li>4 นาที: สรุปบทเรียนจากหน้าสรุปผล และเขียน Exit ticket</li>
+    </ol>
+    <h3>ฐานทั้ง 5</h3>
+    <ul>
+      <li>ฐาน 1 ป่า: Literal meaning (การกระทำจริง)</li>
+      <li>ฐาน 2 เมือง: Literal meaning ในชีวิตประจำวัน</li>
+      <li>ฐาน 3 ลานเวทมนตร์: Idiomatic meaning เบื้องต้น</li>
+      <li>ฐาน 4 ชายหาด: คำเดียวกัน ความหมายต่างกัน</li>
+      <li>ฐาน 5 ปราสาท (ด่านบอส): แยก literal กับ idiomatic จากบริบท</li>
+    </ul>
+    <h3>กติกาและคะแนน</h3>
+    <ul>
+      <li>ตอบถูก +1 คะแนน, ตอบผิด −1 คะแนน (คะแนนติดลบได้)</li>
+      <li>ตอบถูกติดต่อกัน 5 ข้อ คะแนนของ 5 ข้อนั้นคูณ 10 (5 คะแนน กลายเป็น 50 คะแนน) แล้วเริ่มนับคอมโบใหม่ ตอบผิดเมื่อไรคอมโบรีเซ็ต</li>
+      <li>โหมดกลุ่ม: ผู้เล่น 4 คนสลับกันกดตอบทีละข้อ เพื่อนในทีมช่วยกันคิดได้ คะแนนและคอมโบเป็นของทั้งทีม ระบบจะนับจำนวนข้อที่ตอบถูกของแต่ละคนให้</li>
+    </ul>
+    <h3>ตัวอย่างคำถาม/คำตอบ</h3>
+    <div class="qa"><b>Literal:</b> Please ___ your shoes before entering the house.<br>ตอบ: <b>take off</b> (ถอดรองเท้า การกระทำจริง)</div>
+    <div class="qa"><b>Idiomatic:</b> I can't ___ the noise anymore.<br>ตอบ: <b>put up with</b> (ทนต่อ ความหมายไม่ได้มาจากคำแต่ละคำ)</div>
+    <div class="qa"><b>Boss:</b> Which sentence uses “take off” idiomatically?<br>ตอบ: <b>Her online shop took off quickly.</b> (ธุรกิจไปได้สวย)</div>
+    <h3>วิธีสรุปบทเรียน</h3>
+    <ol>
+      <li>ดูหน้าสรุป: คะแนน ความแม่นยำ literal เทียบกับ idiomatic และรายการข้อที่พลาด</li>
+      <li>ครูถามนำ: “ถ้าเห็นการกระทำจริงได้ในภาพ คือ literal ถ้าต้องแปลเป็นความหมายใหม่ คือ idiomatic ใช่ไหม?”</li>
+      <li>Exit ticket บนกระดาษ: เขียน phrasal verb ที่เพิ่งรู้ 1 คำ พร้อมประโยค literal 1 ประโยค และ idiomatic 1 ประโยค ที่เกี่ยวกับชีวิตตัวเอง</li>
+    </ol>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* ============ GAME DATA ============ */
+var STREAK_LEN=5, STREAK_MULT=10;
+var BASES=[
+ {id:1,emoji:"🌲",name:"ป่าแห่งการเคลื่อนไหว",sub:"Literal meaning",
+  lesson:{h:"Literal meaning = ความหมายตรงตัว",p:"Phrasal verb คือ Verb + Particle (up, off, on, out...) ถ้าเห็นภาพการกระทำจริงแล้วแปลตามคำได้เลย คือ literal",
+   ex:[["She <b>sat down</b> on the bench.","เธอนั่งลงบนม้านั่ง"],["He <b>picked up</b> his bag.","เขาหยิบกระเป๋าขึ้นมา"],["Turn <b>off</b> the fan.","ปิดพัดลม"]],
+   tip:"เคล็ดลับ: ถามตัวเองว่า “ทำท่าทางนี้ได้จริงไหม?” ถ้าได้ แปลว่าส่วนใหญ่เป็น literal"},
+  qs:[
+  {kind:"literal",pv:"take off",mean:"ถอด (เสื้อผ้า/รองเท้า)",q:"Please ___ your shoes before entering the house.",opts:["take off","take after","take on"],a:0,th:"กรุณาถอดรองเท้าก่อนเข้าบ้าน",why:"take off = ถอด เป็นการกระทำจริง จึงเป็น literal ส่วน take after = หน้าตาเหมือน(ญาติ) และ take on = รับ(งาน)"},
+  {kind:"literal",pv:"pick up",mean:"หยิบขึ้น",q:"Tom ___ the box from the floor and put it on the shelf.",opts:["picked up","gave up","ran into"],a:0,th:"ทอมหยิบกล่องขึ้นจากพื้นแล้ววางบนชั้น",why:"picked up = หยิบขึ้น (literal) ส่วน gave up = ยอมแพ้ และ ran into = บังเอิญเจอ"},
+  {kind:"literal",pv:"turn on",mean:"เปิด (ไฟ/เครื่องใช้ไฟฟ้า)",q:"The room was dark, so she ___ the lights.",opts:["turned off","turned on","turned out"],a:1,th:"ห้องมืด เธอจึงเปิดไฟ",why:"turned on = เปิดไฟ ตรงข้ามกับ turned off (ปิด) ส่วน turned out = ผลปรากฏว่า"},
+  {kind:"literal",pv:"blow out",mean:"เป่าให้ดับ",q:"He ___ the candles on his birthday cake and made a wish.",opts:["blew up","blew out","blew over"],a:1,th:"เขาเป่าเทียนบนเค้กวันเกิดแล้วอธิษฐาน",why:"blew out = เป่าให้ดับ (literal) ส่วน blew up = ระเบิด/เป่าให้พอง และ blew over = (พายุ/ปัญหา) ผ่านไป"}]},
+ {id:2,emoji:"🏙️",name:"เมืองชีวิตประจำวัน",sub:"Literal meaning",
+  lesson:{h:"Phrasal verbs ใน daily life",p:"หลายคำที่เราใช้ทุกวันเป็น literal เช่น การขึ้น-ลงรถ การแต่งตัว การเอาของออกไป",
+   ex:[["We <b>got on</b> the bus.","เราขึ้นรถบัส"],["Put <b>on</b> your helmet.","สวมหมวกกันน็อก"],["Please <b>take out</b> the trash.","ช่วยเอาขยะไปทิ้งหน่อย"]],
+   tip:"เคล็ดลับ: particle บอกทิศทาง เช่น up = ขึ้น, off = ออก/ลง, out = ออกไป"},
+  qs:[
+  {kind:"literal",pv:"get off",mean:"ลงจาก (รถ)",q:"We ___ the bus at Siam station and walked to the mall.",opts:["got off","got over","got along"],a:0,th:"เราลงจากรถบัสที่สถานีสยามแล้วเดินไปห้าง",why:"got off = ลงจากรถ (literal) ส่วน got over = หายจาก/ผ่านพ้น และ got along = เข้ากันได้"},
+  {kind:"literal",pv:"put on",mean:"สวมใส่",q:"Don't forget to ___ your jacket; it's cold outside.",opts:["put on","put off","put out"],a:0,th:"อย่าลืมใส่แจ็กเก็ตนะ ข้างนอกหนาว",why:"put on = สวมใส่ ส่วน put off = เลื่อนออกไป และ put out = ดับ(ไฟ)"},
+  {kind:"literal",pv:"take out",mean:"เอาออกไป",q:"She ___ the rubbish before the garbage truck arrived.",opts:["took out","took after","took up"],a:0,th:"เธอเอาขยะไปทิ้งก่อนรถขยะมา",why:"took out = เอาออกไป (literal) ส่วน took up = เริ่มทำ(งานอดิเรก)"},
+  {kind:"literal",pv:"put up",mean:"ยกขึ้น (มือ)",q:"Please ___ your hand if you know the answer.",opts:["put up","put off","put out"],a:0,th:"กรุณายกมือถ้ารู้คำตอบ",why:"put up your hand = ยกมือขึ้น (literal) ส่วน put off = เลื่อน และ put out = ดับ"}]},
+ {id:3,emoji:"🔮",name:"ลานเวทมนตร์",sub:"Idiomatic meaning",
+  lesson:{h:"Idiomatic meaning = ความหมายเชิงสำนวน",p:"บางครั้งแปลทีละคำแล้วไม่ได้ความ ต้องจำเป็นก้อน เช่น give up ไม่ได้แปลว่า “ให้ขึ้น” แต่แปลว่า “ยอมแพ้”",
+   ex:[["Never <b>give up</b>!","อย่ายอมแพ้"],["I can't <b>put up with</b> this heat.","ฉันทนความร้อนนี้ไม่ไหว"],["She <b>takes after</b> her mom.","เธอหน้าตา/นิสัยเหมือนแม่"]],
+   tip:"เคล็ดลับ: ถ้าแปลตรงตัวแล้วประหลาด แปลว่าเป็น idiomatic ให้จำความหมายทั้งก้อน"},
+  qs:[
+  {kind:"idiomatic",pv:"put up with",mean:"อดทนต่อ",q:"I can't ___ the noise from the construction site anymore.",opts:["put up with","put on","put away"],a:0,th:"ฉันทนเสียงจากไซต์ก่อสร้างไม่ไหวแล้ว",why:"put up with = ทนต่อ ความหมายไม่ได้มาจากคำ put + up + with ตรง ๆ จึงเป็น idiomatic"},
+  {kind:"idiomatic",pv:"take after",mean:"เหมือน (พ่อแม่/ญาติ)",q:"Nina ___ her grandmother; they both have the same smile.",opts:["takes after","takes off","takes in"],a:0,th:"นีน่าเหมือนคุณยาย ทั้งคู่ยิ้มเหมือนกัน",why:"take after = เหมือน(ญาติผู้ใหญ่) ส่วน takes in = รับเข้ามา/เข้าใจ"},
+  {kind:"idiomatic",pv:"give up",mean:"ยอมแพ้ / เลิก",q:"Don't ___! You can pass the exam if you keep trying.",opts:["give up","give out","give away"],a:0,th:"อย่ายอมแพ้! ถ้าพยายามต่อไปเธอจะสอบผ่าน",why:"give up = ยอมแพ้ ส่วน give out = แจก และ give away = ให้ฟรี"},
+  {kind:"idiomatic",pv:"run into",mean:"บังเอิญเจอ",q:"We ___ an old friend at the supermarket yesterday.",opts:["ran into","ran out of","ran away from"],a:0,th:"เมื่อวานเราบังเอิญเจอเพื่อนเก่าที่ซูเปอร์มาร์เก็ต",why:"ran into = บังเอิญเจอ (ไม่ได้วิ่งเข้าไปจริง ๆ) ส่วน ran out of = ใช้จนหมด"}]},
+ {id:4,emoji:"🏖️",name:"ชายหาดสองความหมาย",sub:"คำเดียว หลายความหมาย",
+  lesson:{h:"คำเดียวกัน ความหมายต่างกัน",p:"Phrasal verb หลายคำมีทั้ง literal และ idiomatic ต้องดูบริบทของประโยคว่าสิ่งที่ถูกกระทำคืออะไร",
+   ex:[["He <b>picked up</b> a shell.","เขาหยิบเปลือกหอยขึ้นมา (literal)"],["She <b>picked up</b> some Thai.","เธอเรียนภาษาไทยมานิดหน่อย (idiomatic)"],["The match was <b>called off</b>.","การแข่งขันถูกยกเลิก (idiomatic)"]],
+   tip:"เคล็ดลับ: ดูคำนามที่ตามมา pick up a shell = หยิบจริง, pick up a language = เรียนรู้"},
+  qs:[
+  {kind:"idiomatic",pv:"call off",mean:"ยกเลิก",q:"The football match was ___ because of the heavy rain.",opts:["called off","called up","called on"],a:0,th:"การแข่งขันฟุตบอลถูกยกเลิกเพราะฝนตกหนัก",why:"called off = ยกเลิก ส่วน called up = โทรหา/เรียกตัว และ called on = แวะเยี่ยม"},
+  {kind:"idiomatic",pv:"pick up",mean:"เรียนรู้ (แบบไม่เป็นทางการ)",q:"I want to ___ some Korean by watching dramas.",opts:["pick up","pick on","pick out"],a:0,th:"ฉันอยากเรียนรู้ภาษาเกาหลีบ้างจากการดูซีรีส์",why:"pick up ที่นี่ = เรียนรู้ (idiomatic) ต่างจากข้อก่อนหน้าที่ pick up = หยิบขึ้น (literal) ส่วน pick on = รังแก"},
+  {kind:"idiomatic",pv:"run out of",mean:"ใช้จนหมด",q:"We have ___ milk. Can you buy some on your way home?",opts:["run out of","run into","run over"],a:0,th:"นมหมดแล้ว ช่วยซื้อระหว่างทางกลับบ้านได้ไหม",why:"run out of = ใช้จนหมด ส่วน run over = ขับรถทับ"},
+  {kind:"idiomatic",pv:"get over",mean:"ผ่านพ้น / หายจาก",q:"She finally ___ her fear of speaking in public.",opts:["got over","got off","got on"],a:0,th:"ในที่สุดเธอก็เอาชนะความกลัวการพูดต่อหน้าคนได้",why:"got over = ผ่านพ้น/หายจาก (idiomatic) ส่วน got off = ลงจาก"}]},
+ {id:5,emoji:"🏰",name:"ปราสาทด่านบอส",sub:"แยก literal กับ idiomatic",
+  lesson:{h:"Boss Battle: แยกจากบริบท",p:"ด่านสุดท้าย ประโยคเดียวกันอาจใช้ phrasal verb ต่างความหมาย ใช้เคล็ดลับดูคำนามและสถานการณ์เป็นตัวช่วย",
+   ex:[["The plane <b>took off</b>.","เครื่องบินขึ้นบิน (literal)"],["Her shop <b>took off</b>.","ร้านของเธอไปได้สวย (idiomatic)"],["Look <b>up</b> at the sky.","เงยหน้ามองฟ้า (literal)"]],
+   tip:"เคล็ดลับ: ถามว่า “เกิดขึ้นจริงในทางกายภาพไหม?” ถ้าไม่ใช่ น่าจะเป็น idiomatic"},
+  qs:[
+  {kind:"idiomatic",pv:"look up",mean:"ค้นหา (ข้อมูล)",q:"Which sentence uses “look up” in an idiomatic meaning?",opts:["She looked up at the colorful kites in the sky.","She looked up the word in a dictionary.","He looked up from his book when I called."],a:1,full:"She looked up the word in a dictionary.",th:"เธอเปิดหาคำนั้นในพจนานุกรม",why:"look up (a word) = ค้นหา เป็น idiomatic ส่วนอีก 2 ประโยคคือเงยหน้ามองจริง ๆ (literal)"},
+  {kind:"idiomatic",pv:"take off",mean:"ไปได้สวย / เติบโตเร็ว",q:"Which sentence uses “take off” in an idiomatic meaning?",opts:["He took off his hat.","Her online shop took off quickly.","The plane took off on time."],a:1,full:"Her online shop took off quickly.",th:"ร้านออนไลน์ของเธอเติบโตอย่างรวดเร็ว",why:"took off = ประสบความสำเร็จอย่างรวดเร็ว (idiomatic) ส่วนถอดหมวกและเครื่องบินขึ้นบินเป็นการกระทำจริง"},
+  {kind:"idiomatic",pv:"make up",mean:"แต่งเรื่องขึ้น",q:"What does “made up” mean? — He made up a story to avoid trouble.",opts:["invented","repaired","folded"],a:0,full:"He made up a story to avoid trouble.",th:"เขาแต่งเรื่องขึ้นมาเพื่อเลี่ยงปัญหา",why:"made up a story = แต่งเรื่องขึ้น (idiomatic) ไม่ได้แปลว่าสร้างตามตัวอักษร"},
+  {kind:"literal",pv:"break up",mean:"แตกออก (ของแข็ง)",q:"In which sentence is “break up” used literally?",opts:["The ice began to break up on the lake.","Anna broke up with her boyfriend.","The meeting broke up at noon."],a:0,full:"The ice began to break up on the lake.",th:"น้ำแข็งบนทะเลสาบเริ่มแตกออก",why:"น้ำแข็งแตกออกจริง ๆ จึงเป็น literal ส่วน broke up with = เลิกกัน และ meeting broke up = ปิดประชุม/แยกย้าย (idiomatic)"}]}
+];
+var TOTAL=BASES.reduce(function(n,b){return n+b.qs.length},0);
+
+/* ============ STATE ============ */
+var state=null, cur=null, busy=false, pendingMode="solo";
+function newState(mode,names){
+  return {mode:mode,players:names.map(function(n){return {name:n,right:0,wrong:0}}),
+    score:0,streak:0,baseIdx:0,qIdx:0,turn:0,done:0,bonuses:0,bestStreak:0,log:[]};
+}
+function curPlayer(){return state.players[state.turn%state.players.length]}
+
+/* ============ UI helpers ============ */
+var toastT;
+function toast(msg){var t=$("#toast");t.textContent=msg;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("on")},2400)}
+function showScreen(id){["sStart","sSetup","sSum"].forEach(function(s){$("#"+s).classList.toggle("on",s===id)});
+  var inGame=!id; $("#hud").classList.toggle("on",inGame); $("#panel").classList.toggle("on",inGame)}
+function setHud(){
+  var b=BASES[state.baseIdx];
+  $("#hBaseSub").textContent="ฐาน "+b.id+" จาก "+BASES.length;
+  $("#hBase").textContent=b.emoji+" "+b.name;
+  $("#hQ").textContent=Math.min(state.done+ (cur&&!cur.answered?1:0),TOTAL)+"/"+TOTAL;
+  $("#hScore").textContent=state.score;
+  var d="";for(var i=0;i<STREAK_LEN;i++)d+='<i class="'+(i<state.streak?"f":"")+'"></i>';
+  $("#hDots").innerHTML=d;
+  $("#hBar").style.width=(state.done/TOTAL*100)+"%";
+}
+function fmt(q){return esc(q).replace("___",'<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')}
+function speak(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function fullSentence(q){return q.full||q.q.replace("___",q.opts[q.a])}
+
+/* ============ FLOW ============ */
+function openSetup(mode){
+  pendingMode=mode;
+  var n=mode==="group"?4:1, h="";
+  $("#setupTitle").textContent=mode==="group"?"ตั้งชื่อสมาชิกกลุ่ม 4 คน":"ตั้งชื่อผู้เล่น";
+  $("#setupSub").textContent=mode==="group"?"ผู้เล่นสลับกันกดตอบทีละข้อ เพื่อนในทีมช่วยกันคิดได้ คะแนนและคอมโบเป็นของทั้งทีม":"เล่นคนเดียว ตอบให้ถูกติดกันเพื่อรับคะแนนคูณ 10";
+  for(var i=0;i<n;i++)h+='<label class="lbl" for="nm'+i+'">'+(mode==="group"?"สมาชิกคนที่ "+(i+1):"ชื่อของคุณ")+'</label><input type="text" id="nm'+i+'" maxlength="16" placeholder="'+(mode==="group"?"ผู้เล่น "+(i+1):"นักผจญภัย")+'" autocomplete="off">';
+  $("#nameFields").innerHTML=h;
+  showScreen("sSetup");
+}
+function startGame(){
+  var n=pendingMode==="group"?4:1, names=[];
+  for(var i=0;i<n;i++){var v=($("#nm"+i).value||"").trim();names.push(v||(pendingMode==="group"?"ผู้เล่น "+(i+1):"นักผจญภัย"))}
+  state=newState(pendingMode,names); cur=null; busy=false;
+  resetWorld();
+  showScreen(null);
+  showLesson();
+}
+function showLesson(){
+  var b=BASES[state.baseIdx], L=b.lesson;
+  var ex=L.ex.map(function(e){return '<div>'+e[0]+'<em>'+e[1]+'</em></div>'}).join("");
+  $("#panelCard").innerHTML='<div class="lesson"><span class="badge">'+b.emoji+' ฐาน '+b.id+' · '+esc(b.sub)+'</span><h2>'+esc(L.h)+'</h2><p class="sub" style="margin-top:4px">'+esc(L.p)+'</p><div class="ex">'+ex+'</div><p class="tip">'+esc(L.tip)+'</p>'
+   +(state.mode==="group"?'<p class="tip">ผู้เล่นคนแรกของฐานนี้: <b>'+esc(curPlayer().name)+'</b></p>':'')
+   +'<div class="stack"><button class="btn" id="bStartBase">เริ่มฐาน '+b.id+'</button></div></div>';
+  cur=null; setHud();
+}
+function showQuestion(){
+  var b=BASES[state.baseIdx], q=b.qs[state.qIdx], L=["A","B","C"];
+  var opts=shuffle(q.opts.map(function(t,i){return {t:t,ok:i===q.a}}));
+  cur={q:q,opts:opts,answered:false};
+  $("#panelCard").innerHTML='<div class="qhead"><span class="badge">'+b.emoji+' ฐาน '+b.id+' · ข้อ '+(state.qIdx+1)+'/'+b.qs.length+'</span>'
+   +(state.mode==="group"?'<span class="turn">🎤 ตาของ '+esc(curPlayer().name)+'</span>':'')+'</div>'
+   +'<p class="qtext">'+fmt(q.q)+'</p><div class="opts">'
+   +opts.map(function(o,i){return '<button class="opt" data-i="'+i+'"><span class="L">'+L[i]+'</span><span>'+esc(o.t)+'</span></button>'}).join("")
+   +'</div><div id="fbBox"></div>';
+  $("#panelCard").scrollTop=0; setHud();
+}
+function answer(i){
+  if(!cur||cur.answered)return;
+  cur.answered=true;
+  var o=cur.opts[i], q=cur.q, ok=o.ok, p=curPlayer(), bonusMsg="", delta=0;
+  if(ok){
+    p.right++; state.score+=1; delta=1; state.streak++; if(state.streak>state.bestStreak)state.bestStreak=state.streak;
+    if(state.streak>=STREAK_LEN){
+      var extra=STREAK_LEN*STREAK_MULT-STREAK_LEN;
+      state.score+=extra; state.bonuses++; state.streak=0;
+      bonusMsg="🔥 คอมโบ "+STREAK_LEN+" ข้อติดกัน! คะแนน "+STREAK_LEN+" ข้อ ×"+STREAK_MULT+" = "+(STREAK_LEN*STREAK_MULT)+" (โบนัส +"+extra+")";
+      toast("🔥 COMBO ×"+STREAK_MULT+"!  +"+extra); burst(70);
+    }else{ burst(14) }
+    heroJump();
+  }else{
+    p.wrong++; state.score-=1; delta=-1; state.streak=0; heroShake();
+  }
+  state.done++;
+  state.log.push({q:q,ok:ok,who:p.name,chosen:o.t});
+  var btns=document.querySelectorAll("#panelCard .opt");
+  btns.forEach(function(b,idx){b.disabled=true;if(cur.opts[idx].ok)b.classList.add("ok");else if(idx===i)b.classList.add("bad")});
+  var full=fullSentence(q), last=(state.qIdx+1>=BASES[state.baseIdx].qs.length), end=last&&state.baseIdx>=BASES.length-1;
+  var tagTxt=q.kind==="literal"?"🧭 Literal · ความหมายตรงตัว":"💡 Idiomatic · ความหมายเชิงสำนวน";
+  $("#fbBox").innerHTML='<div class="fb '+(ok?"ok":"bad")+'"><h3>'+(ok?"✅ ถูกต้อง! +1":"❌ ยังไม่ใช่ −1")+'</h3>'
+   +(bonusMsg?'<div class="combo">'+bonusMsg+'</div>':'')
+   +'<div class="en">'+esc(full)+'</div><div class="th">'+esc(q.th)+'</div>'
+   +'<span class="tag '+q.kind+'">'+tagTxt+'</span>'
+   +'<p class="why"><b>'+esc(q.pv)+'</b> = '+esc(q.mean)+'<br>'+esc(q.why)+'</p>'
+   +'<div class="row stack"><button class="btn ghost" id="bSpeak">🔊 ฟังประโยค</button><button class="btn" id="bNext">'+(end?"ดูสรุปผล":last?"ผ่านฐานนี้ ▶":"ข้อต่อไป ▶")+'</button></div></div>';
+  setHud();
+  $("#panelCard").scrollTo({top:$("#panelCard").scrollHeight,behavior:"smooth"});
+  state._lastFull=full;
+  if(state.mode==="group")state.turn++;
+}
+function next(){
+  if(busy)return;
+  var b=BASES[state.baseIdx];
+  if(state.qIdx+1<b.qs.length){state.qIdx++;showQuestion();return}
+  if(state.baseIdx>=BASES.length-1){markDone(state.baseIdx);burst(120);cur=null;busy=true;setTimeout(function(){busy=false;showSummary()},1300);
+    $("#panelCard").innerHTML='<h2 style="text-align:center">🏰 ถึงปราสาทแล้ว! ภารกิจสำเร็จ</h2>';return}
+  busy=true; markDone(state.baseIdx); burst(50);
+  var nb=BASES[state.baseIdx+1];
+  $("#panelCard").innerHTML='<div style="text-align:center"><h2>🎉 ผ่านฐาน '+b.id+' แล้ว!</h2><p class="sub">กำลังเดินทางไปฐาน '+nb.id+': '+nb.emoji+' '+esc(nb.name)+'</p></div>';
+  cur=null;
+  walkTo(state.baseIdx+1).then(function(){state.baseIdx++;state.qIdx=0;busy=false;showLesson()});
+}
+
+/* ============ SUMMARY ============ */
+function pct(a,b){return b?Math.round(a/b*100):0}
+function showSummary(){
+  showScreen("sSum");
+  var L=state.log, right=L.filter(function(x){return x.ok}).length, acc=pct(right,L.length);
+  var lit=L.filter(function(x){return x.q.kind==="literal"}), idi=L.filter(function(x){return x.q.kind==="idiomatic"});
+  var litR=lit.filter(function(x){return x.ok}).length, idiR=idi.filter(function(x){return x.ok}).length;
+  var rank=state.score>=150?"👑 Phrasal Verb Master":state.score>=80?"🏆 Adventure Pro":state.score>=30?"⭐ Rising Explorer":"🌱 Keep Exploring";
+  var stars=acc>=85?"★★★":acc>=60?"★★☆":"★☆☆";
+  var h='<div class="sum">';
+  h+='<div class="card" style="max-width:none;text-align:center"><div class="stars" aria-label="ดาว">'+stars+'</div><p class="rank">'+rank+'</p><p class="sub" style="margin-top:6px">'+(state.mode==="group"?"ทีม "+state.players.map(function(p){return esc(p.name)}).join(", "):esc(state.players[0].name))+'</p>'
+   +'<div class="big" style="margin-top:12px">'+state.score+'</div><p class="sub">คะแนนรวม · ถูก '+right+'/'+L.length+' ข้อ ('+acc+'%) · คอมโบ ×'+STREAK_MULT+' ได้ '+state.bonuses+' ครั้ง</p></div>';
+  h+='<div class="card" style="max-width:none"><p class="sec">ความแม่นยำแยกตามประเภท</p>'
+   +'<div class="meter lit"><div class="t"><span>🧭 Literal (ความหมายตรงตัว)</span><b>'+litR+'/'+lit.length+'</b></div><div class="b"><i style="width:'+pct(litR,lit.length)+'%"></i></div></div>'
+   +'<div class="meter idi"><div class="t"><span>💡 Idiomatic (ความหมายเชิงสำนวน)</span><b>'+idiR+'/'+idi.length+'</b></div><div class="b"><i style="width:'+pct(idiR,idi.length)+'%"></i></div></div>'
+   +'<p class="sub">'+(pct(litR,lit.length)>pct(idiR,idi.length)?"ทีมเก่ง literal มากกว่า ลองฝึกจำ idiomatic เป็นก้อนเพิ่ม":pct(litR,lit.length)<pct(idiR,idi.length)?"ทีมเก่ง idiomatic มากกว่า ลองสังเกตทิศทางของ particle ใน literal เพิ่ม":"ทั้งสองประเภทพอ ๆ กัน เยี่ยมมาก!")+'</p></div>';
+  if(state.mode==="group"){
+    var ps=state.players.slice().sort(function(a,b){return b.right-a.right}), top=ps[0].right;
+    h+='<div class="card" style="max-width:none"><p class="sec">สมาชิกในทีม</p><div class="scroller"><table><tr><th>ชื่อ</th><th>ตอบถูก</th><th>ตอบผิด</th></tr>'
+     +ps.map(function(p){return '<tr><td>'+(p.right===top&&top>0?"👑 ":"")+esc(p.name)+'</td><td>✅ '+p.right+'</td><td>❌ '+p.wrong+'</td></tr>'}).join("")+'</table></div></div>';
+  }
+  var seen={}, chips="";
+  state.log.forEach(function(x){var k=x.q.pv+"|"+x.q.mean;if(seen[k])return;seen[k]=1;chips+='<div class="chip '+x.q.kind+'"><b>'+esc(x.q.pv)+'</b><small>'+esc(x.q.mean)+'</small></div>'});
+  h+='<div class="card" style="max-width:none"><p class="sec">Phrasal verbs ที่เจอวันนี้</p><p class="sub" style="margin-top:2px">สีฟ้า = literal, สีส้ม = idiomatic</p><div class="chips">'+chips+'</div></div>';
+  var miss=L.filter(function(x){return !x.ok});
+  h+='<div class="card" style="max-width:none"><p class="sec">ทบทวนข้อที่พลาด ('+miss.length+')</p>'
+   +(miss.length?miss.map(function(x){return '<div class="miss"><b>'+esc(fullSentence(x.q))+'</b><br>'+esc(x.q.th)+'<br>'+esc(x.q.pv)+' = '+esc(x.q.mean)+'</div>'}).join(""):'<p class="sub">ไม่มีข้อที่พลาดเลย เก่งมาก!</p>')+'</div>';
+  h+='<div class="card" style="max-width:none"><p class="sec">สรุปบทเรียน</p><ul class="check">'
+   +'<li><span>1️⃣</span><span>Phrasal verb = Verb + Particle ความหมายเปลี่ยนไปตาม particle และบริบท</span></li>'
+   +'<li><span>2️⃣</span><span><b>Literal</b>: เป็นการกระทำจริง เห็นภาพได้ เช่น take off your shoes, put on a jacket</span></li>'
+   +'<li><span>3️⃣</span><span><b>Idiomatic</b>: ต้องจำความหมายใหม่ทั้งก้อน เช่น give up, run into, put up with</span></li>'
+   +'<li><span>4️⃣</span><span>คำเดียวกันอาจมีทั้งสองแบบ เช่น pick up, take off, break up ให้ดูบริบทและคำนามที่ตามมา</span></li></ul>'
+   +'<p class="sec" style="margin-top:16px">Exit ticket (เขียนบนกระดาษ)</p><ul class="check"><li><span>✍️</span><span>เขียน phrasal verb ที่เพิ่งรู้ 1 คำ</span></li><li><span>✍️</span><span>แต่ง 1 ประโยค literal และ 1 ประโยค idiomatic เกี่ยวกับชีวิตของตัวเอง</span></li></ul></div>';
+  h+='<div class="row" style="margin-bottom:8px"><button class="btn" id="bAgain">🔁 เล่นอีกครั้ง</button><button class="btn ghost" id="bHome">กลับหน้าแรก</button></div></div>';
+  $("#sSum").innerHTML=h; $("#sSum").scrollTop=0;
+}
+
+/* ============ EVENTS ============ */
+$("#bSolo").onclick=function(){openSetup("solo")};
+$("#bGroup").onclick=function(){openSetup("group")};
+$("#bTeacher").onclick=function(){$("#mTeacher").classList.add("on")};
+$("#bClose").onclick=function(){$("#mTeacher").classList.remove("on")};
+$("#bBack").onclick=function(){showScreen("sStart")};
+$("#bGo").onclick=startGame;
+$("#panelCard").addEventListener("click",function(e){
+  var t=e.target.closest("button"); if(!t)return;
+  if(t.classList.contains("opt"))answer(+t.dataset.i);
+  else if(t.id==="bStartBase")showQuestion();
+  else if(t.id==="bNext")next();
+  else if(t.id==="bSpeak")speak(state._lastFull||"");
+});
+$("#sSum").addEventListener("click",function(e){
+  var t=e.target.closest("button"); if(!t)return;
+  if(t.id==="bAgain"){startGame()}
+  else if(t.id==="bHome"){resetWorld();showScreen("sStart")}
+});
+
+/* ============ 3D WORLD ============ */
+var R=null,S,C,hero,legL,legR,clock,walk=null,jumpT=-1,shakeT=-1,floaters=[],doneStars=[],particles=[];
+var BPOS=[[0,0],[9,-20],[-9,-40],[9,-60],[0,-80]];
+var camPos,camLook;
+function mat(c){return new THREE.MeshLambertMaterial({color:c})}
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function distSeg(px,pz,ax,az,bx,bz){var dx=bx-ax,dz=bz-az,t=((px-ax)*dx+(pz-az)*dz)/(dx*dx+dz*dz);t=Math.max(0,Math.min(1,t));return Math.hypot(px-(ax+t*dx),pz-(az+t*dz))}
+function nearPath(x,z,r){for(var i=0;i<BPOS.length-1;i++){if(distSeg(x,z,BPOS[i][0],BPOS[i][1],BPOS[i+1][0],BPOS[i+1][1])<r)return true}return false}
+function tree(x,z,s,leaf){
+  var g=new THREE.Group();
+  var t=new THREE.Mesh(new THREE.CylinderGeometry(.25*s,.32*s,1.4*s,8),mat(0x7a4b2a));t.position.y=.7*s;g.add(t);
+  var a=new THREE.Mesh(new THREE.ConeGeometry(1.3*s,2.2*s,9),mat(leaf));a.position.y=2.1*s;g.add(a);
+  var b=new THREE.Mesh(new THREE.ConeGeometry(1*s,1.8*s,9),mat(leaf));b.position.y=3.1*s;g.add(b);
+  g.position.set(x,0,z);S.add(g);return g}
+function palm(x,z,s){
+  var g=new THREE.Group();
+  var t=new THREE.Mesh(new THREE.CylinderGeometry(.18*s,.28*s,3.4*s,8),mat(0xb98650));t.position.y=1.7*s;t.rotation.z=.15;g.add(t);
+  for(var i=0;i<5;i++){var l=new THREE.Mesh(new THREE.SphereGeometry(1,8,6),mat(0x2fbf71));l.scale.set(1.5*s,.14*s,.42*s);l.position.set(.5*s,3.4*s,0);l.rotation.y=i*Math.PI*2/5;
+    var p=new THREE.Group();p.add(l);l.position.set(1.1*s,0,0);p.position.set(.5*s,3.4*s,0);p.rotation.y=i*Math.PI*2/5;p.rotation.z=-.15;g.add(p)}
+  g.position.set(x,0,z);S.add(g);return g}
+function building(x,z,w,h,c){
+  var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,w),mat(c));m.position.set(x,h/2+.1,z);S.add(m);
+  var r=new THREE.Mesh(new THREE.BoxGeometry(w+.3,.3,w+.3),mat(0x4a5068));r.position.set(x,h+.25,z);S.add(r);
+  for(var k=1;k<h/1.7;k++){for(var s=-1;s<=1;s+=2){var wn=new THREE.Mesh(new THREE.BoxGeometry(.55,.7,.06),mat(0xfff0a8));wn.position.set(x+s*w/4,k*1.6,z+w/2+.02);S.add(wn)}}}
+function label(txt,x,y,z){
+  var cv=document.createElement("canvas");cv.width=256;cv.height=128;var c=cv.getContext("2d");
+  c.fillStyle="#ffd23f";c.strokeStyle="#1b2352";c.lineWidth=10;
+  c.beginPath();c.moveTo(24,8);c.lineTo(232,8);c.quadraticCurveTo(248,8,248,24);c.lineTo(248,104);c.quadraticCurveTo(248,120,232,120);c.lineTo(24,120);c.quadraticCurveTo(8,120,8,104);c.lineTo(8,24);c.quadraticCurveTo(8,8,24,8);c.fill();c.stroke();
+  c.fillStyle="#1b2352";c.font="bold 62px Kanit, sans-serif";c.textAlign="center";c.textBaseline="middle";c.fillText(txt,128,68);
+  var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true}));
+  sp.scale.set(4.4,2.2,1);sp.position.set(x,y,z);S.add(sp);return sp}
+function platform(x,z,c){var p=new THREE.Mesh(new THREE.CylinderGeometry(4.6,5,.24,36),mat(c));p.position.set(x,.02,z);S.add(p);
+  var r=new THREE.Mesh(new THREE.TorusGeometry(4.7,.12,6,40),mat(0xffffff));r.rotation.x=Math.PI/2;r.position.set(x,.15,z);S.add(r)}
+function makeHero(){
+  var g=new THREE.Group();
+  var body=new THREE.Mesh(new THREE.CylinderGeometry(.42,.52,1,16),mat(0xee4266));body.position.y=1.2;g.add(body);
+  var head=new THREE.Mesh(new THREE.SphereGeometry(.44,18,14),mat(0xffd2a8));head.position.y=2.05;g.add(head);
+  var hat=new THREE.Mesh(new THREE.ConeGeometry(.5,.55,16),mat(0x6c4cf1));hat.position.y=2.6;g.add(hat);
+  var brim=new THREE.Mesh(new THREE.CylinderGeometry(.62,.62,.07,16),mat(0x6c4cf1));brim.position.y=2.36;g.add(brim);
+  [-.17,.17].forEach(function(x){var e=new THREE.Mesh(new THREE.SphereGeometry(.06,8,8),mat(0x1b2352));e.position.set(x,2.08,.4);g.add(e)});
+  var bp=new THREE.Mesh(new THREE.BoxGeometry(.6,.75,.3),mat(0xffd23f));bp.position.set(0,1.25,-.5);g.add(bp);
+  function leg(x){var p=new THREE.Group();p.position.set(x,.75,0);var m=new THREE.Mesh(new THREE.BoxGeometry(.26,.7,.3),mat(0x1b2352));m.position.y=-.35;p.add(m);g.add(p);return p}
+  legL=leg(-.2);legR=leg(.2);return g}
+function initThree(){
+  if(typeof THREE==="undefined")return false;
+  try{R=new THREE.WebGLRenderer({canvas:$("#c3d"),antialias:true})}catch(e){R=null;return false}
+  R.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  S=new THREE.Scene();S.background=new THREE.Color(0x9fdcff);S.fog=new THREE.Fog(0x9fdcff,35,120);
+  C=new THREE.PerspectiveCamera(55,1,.1,220);
+  S.add(new THREE.HemisphereLight(0xffffff,0x7bbf6a,.95));
+  var sun=new THREE.DirectionalLight(0xffffff,.7);sun.position.set(20,40,20);S.add(sun);
+  var gr=new THREE.Mesh(new THREE.PlaneGeometry(500,500),mat(0x8fd16a));gr.rotation.x=-Math.PI/2;gr.position.set(0,-.05,-40);S.add(gr);
+  for(var i=0;i<BPOS.length-1;i++){
+    var a=BPOS[i],b=BPOS[i+1],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
+    var seg=new THREE.Mesh(new THREE.BoxGeometry(2.8,.1,len),mat(0xf2d8a0));seg.position.set((a[0]+b[0])/2,0,(a[1]+b[1])/2);seg.rotation.y=Math.atan2(dx,dz);S.add(seg)}
+  var pc=[0x4cbf7a,0x5aa7ff,0xb18cff,0xffcf6b,0xffa94d];
+  BPOS.forEach(function(p,i){platform(p[0],p[1],pc[i]);label(String(i+1),p[0],6.6,p[1])});
+  var r=rng(7),k;
+  // base 1: forest
+  for(k=0;k<11;k++){var an=k/11*Math.PI*2;tree(Math.cos(an)*7.2,Math.sin(an)*7.2,1.1+r()*.5,k%2?0x2e9e5b:0x3fb56a)}
+  // base 2: city
+  var bc=[0xff8fa3,0x8ecae6,0xffd166,0xb8e0a3,0xc9b6ff];
+  for(k=0;k<8;k++){var an2=k/8*Math.PI*2+.4;building(BPOS[1][0]+Math.cos(an2)*8,BPOS[1][1]+Math.sin(an2)*8,2.4,3+r()*5,bc[k%5])}
+  // base 3: magic
+  var cx=BPOS[2][0],cz=BPOS[2][1];
+  for(k=0;k<6;k++){var an3=k/6*Math.PI*2;var o=new THREE.Mesh(new THREE.OctahedronGeometry(.9+r()*.5),mat(k%2?0xb18cff:0x7cf0ff));o.position.set(cx+Math.cos(an3)*6.5,2.6,cz+Math.sin(an3)*6.5);S.add(o);floaters.push({o:o,y:2.6,s:1.6+r(),rot:1.2,ph:r()*6})}
+  var tor=new THREE.Mesh(new THREE.TorusGeometry(2.6,.22,10,40),mat(0xffd23f));tor.position.set(cx,3.4,cz);S.add(tor);floaters.push({o:tor,y:3.4,s:1.2,rot:.8,ph:0});
+  // base 4: beach
+  var bx=BPOS[3][0],bz=BPOS[3][1];
+  var sea=new THREE.Mesh(new THREE.CircleGeometry(12,40),mat(0x3fc1e8));sea.rotation.x=-Math.PI/2;sea.position.set(bx+17,.0,bz-2);S.add(sea);
+  for(k=0;k<5;k++){var an4=k/5*Math.PI+Math.PI*.7;palm(bx+Math.cos(an4)*6.8,bz+Math.sin(an4)*6.8,1)}
+  // base 5: castle
+  var ex=BPOS[4][0],ez=BPOS[4][1];
+  var keep=new THREE.Mesh(new THREE.BoxGeometry(6,6,5),mat(0xe9e2d0));keep.position.set(ex,3.1,ez-6);S.add(keep);
+  var roof=new THREE.Mesh(new THREE.ConeGeometry(4.4,3,4),mat(0xee4266));roof.position.set(ex,7.6,ez-6);roof.rotation.y=Math.PI/4;S.add(roof);
+  [[-4.2,-4],[4.2,-4],[-4.2,-8.2],[4.2,-8.2]].forEach(function(t){
+    var tw=new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.2,7,14),mat(0xf3ecd9));tw.position.set(ex+t[0],3.6,ez+t[1]);S.add(tw);
+    var tr=new THREE.Mesh(new THREE.ConeGeometry(1.5,2.2,14),mat(0x6c4cf1));tr.position.set(ex+t[0],8.2,ez+t[1]);S.add(tr)});
+  var gate=new THREE.Mesh(new THREE.BoxGeometry(1.8,2.8,.3),mat(0x7a4b2a));gate.position.set(ex,1.5,ez-3.45);S.add(gate);
+  // scatter
+  var tries=0,placed=0;
+  while(placed<110&&tries<900){tries++;var x=(r()-.5)*110,z=15-r()*135;
+    var bad=nearPath(x,z,7);BPOS.forEach(function(p){if(Math.hypot(x-p[0],z-p[1])<14)bad=true});
+    if(Math.hypot(x-(bx+17),z-(bz-2))<14)bad=true;
+    if(bad)continue;placed++;tree(x,z,.8+r()*.8,r()>.5?0x4cae5e:0x2f9a55)}
+  for(k=0;k<14;k++){var cl=new THREE.Group();for(var j=0;j<4;j++){var s=new THREE.Mesh(new THREE.SphereGeometry(2+r()*1.4,10,8),new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:.92}));s.position.set(j*2.2,r()*.8,r());cl.add(s)}
+    cl.position.set((r()-.5)*160,22+r()*10,15-r()*130);S.add(cl);floaters.push({o:cl,y:cl.position.y,s:.3,rot:0,ph:r()*6,drift:true})}
+  hero=makeHero();S.add(hero);clock=new THREE.Clock();
+  camPos=new THREE.Vector3();camLook=new THREE.Vector3();
+  resize();window.addEventListener("resize",resize);
+  resetHero();loop();return true}
+function resize(){if(!R)return;var w=window.innerWidth,h=window.innerHeight;R.setSize(w,h,false);C.aspect=w/h;C.fov=w/h<.8?72:55;C.updateProjectionMatrix()}
+function camTargets(){var portrait=window.innerHeight>window.innerWidth;
+  return {pos:new THREE.Vector3(hero.position.x,portrait?8:7,hero.position.z+(portrait?14:12)),look:new THREE.Vector3(hero.position.x,portrait?-.5:.2,hero.position.z-3)}}
+function resetHero(){if(!hero)return;hero.position.set(BPOS[0][0],.1,BPOS[0][1]);var a=BPOS[1];hero.rotation.y=Math.atan2(a[0]-BPOS[0][0],a[1]-BPOS[0][1]);
+  walk=null;jumpT=-1;shakeT=-1;var t=camTargets();camPos.copy(t.pos);camLook.copy(t.look)}
+function resetWorld(){
+  if(!R)return;doneStars.forEach(function(s){S.remove(s);floaters=floaters.filter(function(f){return f.o!==s})});doneStars=[];
+  particles.forEach(function(p){S.remove(p.m)});particles=[];resetHero()}
+function markDone(i){if(!R)return;var s=new THREE.Mesh(new THREE.OctahedronGeometry(.8),mat(0xffd23f));s.scale.y=1.4;s.position.set(BPOS[i][0]+2.4,4.4,BPOS[i][1]);S.add(s);doneStars.push(s);floaters.push({o:s,y:4.4,s:2,rot:2,ph:0})}
+function walkTo(i){return new Promise(function(res){
+  if(!R){setTimeout(res,700);return}
+  var from=hero.position.clone(),to=new THREE.Vector3(BPOS[i][0],.1,BPOS[i][1]),dx=to.x-from.x,dz=to.z-from.z;
+  hero.rotation.y=Math.atan2(dx,dz);walk={from:from,to:to,t:0,dur:Math.max(2.6,Math.hypot(dx,dz)/9),done:res}})}
+function heroJump(){jumpT=0}
+function heroShake(){shakeT=0}
+var cols=[0xffd23f,0xee4266,0x1fbf8f,0x6c4cf1,0x2f9bff,0xff9f1c];
+function burst(n){if(!R)return;for(var i=0;i<n;i++){var m=new THREE.Mesh(new THREE.BoxGeometry(.18,.18,.03),new THREE.MeshBasicMaterial({color:cols[i%cols.length]}));
+  m.position.set(hero.position.x,hero.position.y+2.8,hero.position.z);S.add(m);
+  particles.push({m:m,v:new THREE.Vector3((Math.random()-.5)*7,4+Math.random()*5,(Math.random()-.5)*7),life:1.7,r:new THREE.Vector3(Math.random()*8,Math.random()*8,0)})}}
+function loop(){
+  requestAnimationFrame(loop);
+  var dt=Math.min(clock.getDelta(),.05),time=clock.elapsedTime,moving=false;
+  if(walk){moving=true;walk.t+=dt/walk.dur;var k=Math.min(walk.t,1),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    hero.position.x=walk.from.x+(walk.to.x-walk.from.x)*e;hero.position.z=walk.from.z+(walk.to.z-walk.from.z)*e;
+    if(k>=1){var d=walk.done;walk=null;if(d)d()}}
+  var swing=moving?Math.sin(time*11)*.75:0;legL.rotation.x=swing;legR.rotation.x=-swing;
+  var y=.1+(moving?Math.abs(Math.sin(time*11))*.14:Math.sin(time*2)*.03);
+  if(jumpT>=0){jumpT+=dt/.55;y+=Math.sin(Math.min(jumpT,1)*Math.PI)*1.4;if(jumpT>=1)jumpT=-1}
+  hero.position.y=y;
+  if(shakeT>=0){shakeT+=dt/.6;hero.rotation.z=Math.sin(shakeT*38)*.22*(1-Math.min(shakeT,1));if(shakeT>=1){shakeT=-1;hero.rotation.z=0}}
+  floaters.forEach(function(f){f.o.position.y=f.y+Math.sin(time*f.s+f.ph)*(f.drift?.8:.35);f.o.rotation.y+=dt*f.rot;if(f.drift)f.o.position.x+=dt*f.s});
+  for(var i=particles.length-1;i>=0;i--){var p=particles[i];p.life-=dt;p.v.y-=14*dt;p.m.position.addScaledVector(p.v,dt);p.m.rotation.x+=p.r.x*dt;p.m.rotation.y+=p.r.y*dt;
+    if(p.life<=0||p.m.position.y<0){S.remove(p.m);particles.splice(i,1)}}
+  var t=camTargets(),f=1-Math.pow(.002,dt);camPos.lerp(t.pos,f);camLook.lerp(t.look,f);
+  C.position.copy(camPos);C.lookAt(camLook);R.render(S,C)}
+
+try{initThree()}catch(err){R=null;console.error(err)}
+})();
+</script>
+</body>
+</html>
